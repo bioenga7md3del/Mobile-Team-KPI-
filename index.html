@@ -27,13 +27,12 @@ h1{margin:6px 0 2px 0;font-size:28px;font-weight:800}
 .tab.active{background:var(--card)}
 .view{display:none}
 .view.active{display:block}
-.grid{display:grid;grid-template-columns:1fr;gap:16px}
-@media(min-width:940px){.grid{grid-template-columns:1fr 1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
 .card h3{margin:0 0 10px 0}
 table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
 th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
 thead th{background:#eef2f7}
+.badge{display:inline-block;padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;margin-left:8px;color:#334155;font-weight:700}
 .reveal{text-align:center;margin:6px 0 12px 0}
 .reveal button{padding:10px 16px;border:1px solid var(--border);border-radius:999px;background:#fff;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
 .winners{margin-top:10px;border:2px solid var(--gold);background:linear-gradient(180deg,#fffaf0,#fff4d6);border-radius:20px;padding:16px;box-shadow:var(--shadow);display:none}
@@ -45,7 +44,6 @@ details.tech>summary{cursor:pointer;list-style:none;padding:12px 14px;font-weigh
 details.tech>summary::-webkit-details-marker{display:none}
 .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}
 .kv div{background:#f9fafb;padding:8px;border:1px solid var(--border);border-radius:10px}
-.badge{display:inline-block;padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;margin-left:8px;color:#334155;font-weight:700}
 .bar{height:10px;background:#e5e7eb;border-radius:8px;overflow:hidden}
 .bar>span{display:block;height:100%;background:#60a5fa}
 footer{margin:14px 0;text-align:center}
@@ -67,7 +65,7 @@ footer{margin:14px 0;text-align:center}
     <label class="input">Corrective CSV: <input id="file-corrective" type="file" accept=".csv"/></label>
     <label class="input">PPM CSV: <input id="file-ppm" type="file" accept=".csv"/></label>
     <button id="build">Build Dashboard</button>
-    <span class="small">Hint: save Wo.xlsx &amp; ppm.xlsx as CSV first</span>
+    <span class="small">Tip: Save Wo.xlsx &amp; ppm.xlsx as CSV first (same folder as this file).</span>
   </div>
 
   <div class="tabs">
@@ -86,9 +84,8 @@ footer{margin:14px 0;text-align:center}
 </div>
 
 <script>
-/* ------- CSV helpers ------- */
+/* ---- CSV helpers ---- */
 function parseCSV(text){
-  // simple CSV parser (handles commas, basic quotes)
   const rows=[]; let i=0, cur="", inQ=false; const push=()=>{rows[rows.length-1].push(cur);cur="";}
   rows.push([]);
   for(;i<text.length;i++){
@@ -105,7 +102,6 @@ function parseCSV(text){
     cur+=c;
   }
   push();
-  // drop last empty row if any
   if(rows.length && rows[rows.length-1].length===1 && rows[rows.length-1][0]==="") rows.pop();
   return rows;
 }
@@ -124,22 +120,6 @@ function num(v){
   if(s==="") return NaN;
   const n=Number(s.replace(/,/g,""));
   return isNaN(n)?NaN:n;
-}
-const ALIASES = {
-  "Mohamed Safwat/Ahmed Sultan Alanezi":"Mohamed Safwat / Ahmed Sultan Alanezi",
-  "Mohamed Safwat / Ahmed Sultan Alanezi":"Mohamed Safwat / Ahmed Sultan Alanezi",
-  "Akhter Hussain/Ateeq Elatawy":"Akhter Hussain / Ateeq Elatawy",
-  "Akhter Hussain / Ateeq Elatawy":"Akhter Hussain / Ateeq Elatawy",
-  "Mohamed Ansar hassan/Saud Falah Albalawi":"Mohamed Ansar hassan / Saud Falah Albalawi",
-  "Saud Falah Albalawi/Mohamed Ansar hassan":"Mohamed Ansar hassan / Saud Falah Albalawi",
-  "Ahmed Mohamed Moussa/Abdelrahman Elhiwiti":"Ahmed Mohamed Moussa / Abdelrahman Elhiwiti",
-  "Mohamed Safwat/Ahmed Sultan Alanzi":"Mohamed Safwat / Ahmed Sultan Alanezi",
-  "Mohamed Safwat / Ahmed Sultan Alanzi":"Mohamed Safwat / Ahmed Sultan Alanezi"
-};
-function normName(s){
-  if(s==null) return "Unassigned";
-  let t=String(s).trim().replace(/\s*\/\s*/g," / ");
-  return ALIASES[t] || t;
 }
 function detectCols(header){
   let tech=null, resp=null, rep=null;
@@ -160,7 +140,7 @@ function computeKPI(rows){
   const body=rows.slice(1);
   const map=new Map();
   body.forEach(r=>{
-    const name=normName(r[cols.tech]);
+    const name=String(r[cols.tech]??"").trim()||"Unassigned";
     const resp=num(r[cols.resp]);
     const rep =num(r[cols.rep]);
     const under = isNaN(rep); // no Repair KPI => still under repair
@@ -186,33 +166,10 @@ function rankLogic(arr){
     if(b.CompletionRate_%!==a.CompletionRate_%) return b.CompletionRate_%-a.CompletionRate_%;
     if(a.Avg_Response_Days!==b.Avg_Response_Days) return a.Avg_Response_Days-b.Avg_Response_Days;
     if(a.Avg_Repair_Days!==b.Avg_Repair_Days) return a.Avg_Repair_Days-b.Avg_Repair_Days;
-    return b.WorkOrders-a.WorkOrders; // more WOs wins tie
+    return b.WorkOrders-a.WorkOrders;
   });
 }
-function weightedCombine(cor, ppm){
-  const byName=new Map();
-  function add(arr){
-    arr.forEach(x=>{
-      const k=x.Technician;
-      if(!byName.has(k)) byName.set(k,{Technician:k, w:0, respW:0, repW:0, fin:0, und:0});
-      const o=byName.get(k);
-      o.w+=x.WorkOrders;
-      o.respW+=x.Avg_Response_Days*x.WorkOrders;
-      o.repW +=x.Avg_Repair_Days*x.WorkOrders;
-      o.fin+=x.Finished; o.und+=x.UnderRepair;
-    });
-  }
-  add(cor); add(ppm);
-  return [...byName.values()].map(o=>{
-    const w = Math.max(1,o.w);
-    const Avg_Response_Days = +(o.respW/w).toFixed(2);
-    const Avg_Repair_Days   = +(o.repW/w).toFixed(2);
-    const Finished=o.fin, UnderRepair=o.und, WorkOrders=o.w;
-    const denom=Finished+UnderRepair;
-    const CompletionRate_% = denom? +((Finished/denom)*100).toFixed(1):0;
-    return {Technician:o.Technician, Avg_Response_Days, Avg_Repair_Days, Finished, UnderRepair, CompletionRate_% , WorkOrders};
-  });
-}
+/* UI helpers */
 function percentBar(pct){
   const v=Math.max(0,Math.min(100, pct||0));
   return `<div class="bar"><span style="width:${v}%"></span></div>`;
@@ -269,6 +226,12 @@ function winnersHTML(title, ranked){
       })();
     </script>`;
 }
+function median(arr){
+  const v=arr.filter(x=>typeof x==="number" && !isNaN(x)).sort((a,b)=>a-b);
+  if(!v.length) return 0;
+  const m=Math.floor(v.length/2);
+  return v.length%2? v[m] : (v[m-1]+v[m])/2;
+}
 function drilldownHTML(arr){
   if(!arr.length) return "";
   const respMed = median(arr.map(a=>a.Avg_Response_Days));
@@ -301,12 +264,6 @@ function drilldownHTML(arr){
   }).join("");
   return `<div class="card"><h3>Per-Technician Drill-down & Recommendations</h3>${items}</div>`;
 }
-function median(arr){
-  const v=arr.filter(x=>typeof x==="number" && !isNaN(x)).sort((a,b)=>a-b);
-  if(!v.length) return 0;
-  const m=Math.floor(v.length/2);
-  return v.length%2? v[m] : (v[m-1]+v[m])/2;
-}
 function buildSection(targetEl, title, ranked){
   targetEl.innerHTML = `
     ${winnersHTML(title, ranked)}
@@ -314,10 +271,7 @@ function buildSection(targetEl, title, ranked){
     ${drilldownHTML(ranked)}
   `;
 }
-/* ------- UI wiring ------- */
-const elCombined = document.getElementById("combined");
-const elCorrective = document.getElementById("corrective");
-const elPPM = document.getElementById("ppm");
+/* ---- Tabs ---- */
 document.querySelectorAll('.tab').forEach(function(btn){
   btn.addEventListener('click', function(){
     document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
@@ -327,6 +281,7 @@ document.querySelectorAll('.tab').forEach(function(btn){
     window.scrollTo({top:0,behavior:'smooth'});
   });
 });
+/* ---- Build ---- */
 document.getElementById("build").addEventListener("click", async ()=>{
   const fCor = document.getElementById("file-corrective").files[0];
   const fPPM = document.getElementById("file-ppm").files[0];
@@ -336,11 +291,38 @@ document.getElementById("build").addEventListener("click", async ()=>{
 
   const cor = rankLogic( computeKPI(rowsCor) );
   const ppm = rankLogic( computeKPI(rowsPPM) );
-  const combined = rankLogic( weightedCombine(cor, ppm) );
+  // combined weighted by WorkOrders
+  const byName = new Map();
+  function add(arr){
+    arr.forEach(x=>{
+      const k=x.Technician;
+      if(!byName.has(k)) byName.set(k,{Technician:k, w:0, respW:0, repW:0, fin:0, und:0});
+      const o=byName.get(k);
+      o.w+=x.WorkOrders;
+      o.respW+=x.Avg_Response_Days*x.WorkOrders;
+      o.repW +=x.Avg_Repair_Days*x.WorkOrders;
+      o.fin+=x.Finished; o.und+=x.UnderRepair;
+    });
+  }
+  add(cor); add(ppm);
+  const combined = Array.from(byName.values()).map(o=>{
+    const w = Math.max(1,o.w);
+    const Avg_Response_Days = +(o.respW/w).toFixed(2);
+    const Avg_Repair_Days   = +(o.repW/w).toFixed(2);
+    const Finished=o.fin, UnderRepair=o.und, WorkOrders=o.w;
+    const denom=Finished+UnderRepair;
+    const CompletionRate_% = denom? +((Finished/denom)*100).toFixed(1):0;
+    return {Technician:o.Technician, Avg_Response_Days, Avg_Repair_Days, Finished, UnderRepair, CompletionRate_% , WorkOrders};
+  }).sort((a,b)=>{
+    if(b.CompletionRate_%!==a.CompletionRate_%) return b.CompletionRate_%-a.CompletionRate_%;
+    if(a.Avg_Response_Days!==b.Avg_Response_Days) return a.Avg_Response_Days-b.Avg_Response_Days;
+    if(a.Avg_Repair_Days!==b.Avg_Repair_Days) return a.Avg_Repair_Days-b.Avg_Repair_Days;
+    return b.WorkOrders-a.WorkOrders;
+  });
 
-  buildSection(elCorrective, "Corrective", cor);
-  buildSection(elPPM, "PPM", ppm);
-  buildSection(elCombined, "Combined", combined);
+  buildSection(document.getElementById("corrective"), "Corrective", cor);
+  buildSection(document.getElementById("ppm"), "PPM", ppm);
+  buildSection(document.getElementById("combined"), "Combined", combined);
 });
 </script>
 </body>
