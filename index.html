@@ -12,12 +12,12 @@
   --bg:#f7f7fb; --panel:#ffffff; --muted:#6b7280; --text:#1f2937; --border:#e5e7eb;
   --ring:#d1d5db; --shadow:0 10px 30px rgba(0,0,0,.05);
   --gold:#ffedd5; --gold-border:#fbbf24; --gold-text:#b45309;
-  --green:#10b981; --red:#ef4444; --blue:#2563eb; --subtle:#f3f4f6;
+  --green:#10b981; --red:#ef4444; --orange:#f59e0b; --subtle:#f3f4f6;
 }
 *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial}
 .container{max-width:1200px;margin:22px auto;padding:0 12px}
 
-/* header (مطابق للصورة 1) */
+/* header */
 .header{display:grid;grid-template-columns:160px 1fr 260px;gap:12px;align-items:center}
 .brand-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;display:flex;justify-content:center;align-items:center;min-height:88px;box-shadow:var(--shadow)}
 .brand-box img{max-width:140px;height:auto}
@@ -116,121 +116,63 @@ footer img{height:26px;border-radius:6px;border:1px solid var(--border)}
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" id="tab-cm">Corrective</button>
-    <button class="tab" id="tab-pm">Preventive</button>
+    <button class="tab active" id="tab-cm">Corrective (WO)</button>
+    <button class="tab" id="tab-pm">Preventive (PPM)</button>
     <button class="tab" id="tab-co">Combined</button>
   </div>
 
   <!-- Corrective -->
   <div class="view active" id="cm">
-    <div class="section">
-      <div class="hd">Summary</div>
-      <div class="bd"><div class="kpigrid" id="cm-kpis"></div></div>
+    <div class="section"><div class="hd">Summary</div><div class="bd"><div class="kpigrid" id="cm-kpis"></div></div></div>
+
+    <div class="grid2">
+      <div class="section"><div class="hd">Top 5 (Response)</div><div class="bd"><svg id="cm-top5-response" class="chart"></svg></div></div>
+      <div class="section"><div class="hd">Top 5 (Repair)</div><div class="bd"><svg id="cm-top5-repair" class="chart"></svg></div></div>
     </div>
 
     <div class="grid2">
-      <div class="section">
-        <div class="hd">Total Work Orders by Site</div>
-        <div class="bd"><svg id="cm-total" class="chart"></svg></div>
-      </div>
-      <div class="section">
-        <div class="hd">Open vs Closed</div>
-        <div class="bd"><svg id="cm-pie" class="chart"></svg></div>
-      </div>
+      <div class="section"><div class="hd">Finished vs Under Repair</div><div class="bd"><svg id="cm-finished-under" class="chart"></svg></div></div>
+      <div class="section"><div class="hd">Completion</div><div class="bd"><svg id="cm-completion" class="chart"></svg></div></div>
     </div>
 
-    <div class="grid2">
-      <div class="section">
-        <div class="hd">Avg. Repair Days by Site</div>
-        <div class="bd"><svg id="cm-repair" class="chart"></svg></div>
-      </div>
-      <div class="section">
-        <div class="hd">Top 10 Devices (ECRI)</div>
-        <div class="bd"><svg id="cm-dev" class="chart"></svg></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="hd">Corrective – Ranking (Top 12)</div>
-      <div class="bd"><div style="overflow:auto"><table id="cm-rank"></table></div></div>
-    </div>
-
-    <div class="section">
-      <div class="hd">Sites – Details & Recommendations</div>
-      <div class="bd" id="cm-sites"></div>
-    </div>
+    <div class="section"><div class="hd">Corrective – Ranking (Top 12)</div><div class="bd"><div style="overflow:auto"><table id="cm-rank"></table></div></div></div>
+    <div class="section"><div class="hd">Sites – Details & Recommendations</div><div class="bd" id="cm-sites"></div></div>
   </div>
 
   <!-- Preventive -->
   <div class="view" id="pm">
-    <div class="section">
-      <div class="hd">Summary</div>
-      <div class="bd"><div class="kpigrid" id="pm-kpis"></div></div>
+    <div class="section"><div class="hd">Summary</div><div class="bd"><div class="kpigrid" id="pm-kpis"></div></div></div>
+
+    <div class="grid2">
+      <div class="section"><div class="hd">Top 5 (Response)</div><div class="bd"><svg id="pm-top5-response" class="chart"></svg></div></div>
+      <div class="section"><div class="hd">Top 5 (Repair)</div><div class="bd"><svg id="pm-top5-repair" class="chart"></svg></div></div>
     </div>
 
     <div class="grid2">
-      <div class="section">
-        <div class="hd">Total Work Orders by Site</div>
-        <div class="bd"><svg id="pm-total" class="chart"></svg></div>
-      </div>
-      <div class="section">
-        <div class="hd">Open vs Closed</div>
-        <div class="bd"><svg id="pm-pie" class="chart"></svg></div>
-      </div>
+      <div class="section"><div class="hd">Finished vs Under Repair</div><div class="bd"><svg id="pm-finished-under" class="chart"></svg></div></div>
+      <div class="section"><div class="hd">Completion</div><div class="bd"><svg id="pm-completion" class="chart"></svg></div></div>
     </div>
 
-    <div class="grid2">
-      <div class="section">
-        <div class="hd">Avg. Repair Days by Site</div>
-        <div class="bd"><svg id="pm-repair" class="chart"></svg></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="hd">Preventive – Ranking (Top 12)</div>
-      <div class="bd"><div style="overflow:auto"><table id="pm-rank"></table></div></div>
-    </div>
-
-    <div class="section">
-      <div class="hd">Sites – Details & Recommendations</div>
-      <div class="bd" id="pm-sites"></div>
-    </div>
+    <div class="section"><div class="hd">Preventive – Ranking (Top 12)</div><div class="bd"><div style="overflow:auto"><table id="pm-rank"></table></div></div></div>
+    <div class="section"><div class="hd">Sites – Details & Recommendations</div><div class="bd" id="pm-sites"></div></div>
   </div>
 
   <!-- Combined -->
   <div class="view" id="co">
-    <div class="section">
-      <div class="hd">Summary</div>
-      <div class="bd"><div class="kpigrid" id="co-kpis"></div></div>
+    <div class="section"><div class="hd">Summary</div><div class="bd"><div class="kpigrid" id="co-kpis"></div></div></div>
+
+    <div class="grid2">
+      <div class="section"><div class="hd">Top 5 (Response)</div><div class="bd"><svg id="co-top5-response" class="chart"></svg></div></div>
+      <div class="section"><div class="hd">Top 5 (Repair)</div><div class="bd"><svg id="co-top5-repair" class="chart"></svg></div></div>
     </div>
 
     <div class="grid2">
-      <div class="section">
-        <div class="hd">Total Work Orders by Site</div>
-        <div class="bd"><svg id="co-total" class="chart"></svg></div>
-      </div>
-      <div class="section">
-        <div class="hd">Open vs Closed</div>
-        <div class="bd"><svg id="co-pie" class="chart"></svg></div>
-      </div>
+      <div class="section"><div class="hd">Finished vs Under Repair</div><div class="bd"><svg id="co-finished-under" class="chart"></svg></div></div>
+      <div class="section"><div class="hd">Completion</div><div class="bd"><svg id="co-completion" class="chart"></svg></div></div>
     </div>
 
-    <div class="grid2">
-      <div class="section">
-        <div class="hd">Avg. Repair Days by Site</div>
-        <div class="bd"><svg id="co-repair" class="chart"></svg></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="hd">Combined – Ranking (Top 12)</div>
-      <div class="bd"><div style="overflow:auto"><table id="co-rank"></table></div></div>
-    </div>
-
-    <div class="section">
-      <div class="hd">Sites – Details & Recommendations</div>
-      <div class="bd" id="co-sites"></div>
-    </div>
+    <div class="section"><div class="hd">Combined – Ranking (Top 12)</div><div class="bd"><div style="overflow:auto"><table id="co-rank"></table></div></div></div>
+    <div class="section"><div class="hd">Sites – Details & Recommendations</div><div class="bd" id="co-sites"></div></div>
   </div>
 
   <footer>
@@ -241,10 +183,10 @@ footer img{height:26px;border-radius:6px;border:1px solid var(--border)}
 </div>
 
 <script>
-/* نفس أسماء الأعمدة التي عندك */
+/* أعمدة الملف */
 const COL={site:'Site',resp:'Response KPI',rep:'Repierd KPI',ecri:'ECRI Code'};
 
-/* تبويب */
+/* تبويبات */
 [['tab-cm','cm'],['tab-pm','pm'],['tab-co','co']].forEach(([b,v])=>{
   document.getElementById(b).addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
@@ -261,7 +203,7 @@ document.getElementById('btn-lang').addEventListener('click',()=>{
   else{ html.setAttribute('dir','rtl'); html.setAttribute('lang','ar'); }
 });
 
-/* قراءة الإكسل (أكبر شيت) */
+/* قراءة Excel (أكبر شيت) */
 function readExcel(f){
   return new Promise((res,rej)=>{
     const r=new FileReader();
@@ -293,12 +235,13 @@ const isNullish=v=>v===null||v===undefined||String(v).trim().toLowerCase()===''|
 const toNum=v=>isNullish(v)?NaN:Number(String(v).replaceAll(',',''));
 const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
 
+/* Corrective: open لو Repierd KPI فاضي */
 function groupCorrective(rows){
   const map=new Map(), devices=new Map();
   rows.forEach(r=>{
     const site=(r[COL.site]??'(blank)').toString().trim();
     const resp=toNum(r[COL.resp]), rep=toNum(r[COL.rep]);
-    const open=isNullish(r[COL.rep]);                 // مفتوح لو Repierd KPI فاضي
+    const open=isNullish(r[COL.rep]);
     if(!map.has(site)) map.set(site,{site,total:0,open:0,resp:[],rep:[]});
     const s=map.get(site); s.total++; if(open) s.open++;
     if(!Number.isNaN(resp)) s.resp.push(resp);
@@ -316,14 +259,15 @@ function groupCorrective(rows){
   return {arr,top};
 }
 
+/* Preventive: مغلق لو Repierd KPI رقم >=0 ؛ مفتوح لو rep فاضي أو response فاضي */
 function groupPreventive(rows){
   const map=new Map();
   rows.forEach(r=>{
     const site=(r[COL.site]??'(blank)').toString().trim();
     const resp=toNum(r[COL.resp]), rep=toNum(r[COL.rep]);
     const respBlank=isNullish(r[COL.resp]), repBlank=isNullish(r[COL.rep]);
-    const isClosed=Number.isFinite(rep)&&rep>=0;     // مغلق لو Repierd KPI رقم >= 0
-    const isOpen=repBlank||respBlank;                // مفتوح لو أيّ منهما فاضي
+    const isClosed=Number.isFinite(rep)&&rep>=0;
+    const isOpen=repBlank||respBlank;
     const notOpened=respBlank;
     if(!map.has(site)) map.set(site,{site,total:0,open:0,closed:0,notOpened:0,resp:[],rep:[]});
     const s=map.get(site);
@@ -340,6 +284,7 @@ function groupPreventive(rows){
   return {arr};
 }
 
+/* Combine */
 function combine(cm,pm){
   const map=new Map();
   function add(a){ a.forEach(r=>{ if(!map.has(r.site)) map.set(r.site,{site:r.site,total:0,open:0,closed:0,resps:[],reps:[]});
@@ -371,20 +316,83 @@ function rank(rows){
   });
 }
 
-function drawBar(svg,items,xKey,yKey){
-  const w=svg.clientWidth,h=svg.clientHeight,p=36; svg.innerHTML='';
-  const max=Math.max(1,...items.map(d=>+d[yKey]||0)), bw=(w-p*2)/Math.max(1,items.length);
-  const axis=document.createElementNS('http://www.w3.org/2000/svg','line');
-  axis.setAttribute('x1',p);axis.setAttribute('y1',h-p);axis.setAttribute('x2',w-p);axis.setAttribute('y2',h-p);
-  axis.setAttribute('stroke','#cbd5e1');svg.appendChild(axis);
+/* ===== رسومات مطابقة للّياوت ===== */
+function top5ByAvg(rows, keyAvg, labelKey='site'){
+  const valid = rows.filter(r => Number.isFinite(r[keyAvg]));
+  valid.sort((a,b) => a[keyAvg] - b[keyAvg]);
+  return valid.slice(0, 5).map(r => ({ label: r[labelKey], value: r[keyAvg] }));
+}
+function drawBarH(svg, items){ // أعمدة أفقية
+  const w = svg.clientWidth, h = svg.clientHeight, pad = 40;
+  svg.innerHTML = '';
+  if(!items.length){
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', w/2); t.setAttribute('y', h/2);
+    t.setAttribute('text-anchor','middle'); t.textContent = 'No data';
+    svg.appendChild(t); return;
+  }
+  const max = Math.max(1, ...items.map(d => +d.value || 0));
+  const rowH = (h - pad*2) / items.length;
+
+  const axis = document.createElementNS('http://www.w3.org/2000/svg','line');
+  axis.setAttribute('x1', pad); axis.setAttribute('y1', h-pad);
+  axis.setAttribute('x2', w-pad); axis.setAttribute('y2', h-pad);
+  axis.setAttribute('stroke', '#cbd5e1'); svg.appendChild(axis);
+
   items.forEach((d,i)=>{
-    const x=p+i*bw+4, y=h-p-((d[yKey]||0)/max*(h-p*2));
-    const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
-    r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',Math.max(2,bw-8));
-    r.setAttribute('height',(h-p)-y);r.setAttribute('fill','#f59e0b');svg.appendChild(r);
-    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x',x+(bw-8)/2);t.setAttribute('y',h-10);t.setAttribute('font-size','10');t.setAttribute('text-anchor','middle');
-    t.textContent=String(d[xKey]).slice(0,12); svg.appendChild(t);
+    const y = pad + i*rowH + 6;
+    const barW = ((d.value || 0) / max) * (w - pad*2);
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', pad); rect.setAttribute('y', y);
+    rect.setAttribute('width', Math.max(2, barW)); rect.setAttribute('height', Math.max(10, rowH-12));
+    rect.setAttribute('fill', '#f59e0b'); svg.appendChild(rect);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+    label.setAttribute('x', pad-6); label.setAttribute('y', y + (rowH-12)/2 + 8);
+    label.setAttribute('font-size','11'); label.setAttribute('text-anchor','end');
+    label.textContent = d.label; svg.appendChild(label);
+
+    const val = document.createElementNS('http://www.w3.org/2000/svg','text');
+    val.setAttribute('x', pad + barW + 6); val.setAttribute('y', y + (rowH-12)/2 + 8);
+    val.setAttribute('font-size','11');
+    val.textContent = (Number(d.value).toFixed(2)) + ' d'; svg.appendChild(val);
+  });
+}
+function drawStackedFinishedUnder(svg, rows){
+  const w = svg.clientWidth, h = svg.clientHeight, pad = 40;
+  svg.innerHTML = '';
+  const data = rows.slice().sort((a,b)=> (b.total_wo||0) - (a.total_wo||0)).slice(0,8);
+  if(!data.length){ const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', w/2); t.setAttribute('y', h/2); t.setAttribute('text-anchor','middle'); t.textContent='No data';
+    svg.appendChild(t); return; }
+
+  const bw = (w - pad*2) / data.length;
+  const max = Math.max(1, ...data.map(d => (d.closed_wo||0) + (d.open_wo||0)));
+
+  const axis = document.createElementNS('http://www.w3.org/2000/svg','line');
+  axis.setAttribute('x1', pad); axis.setAttribute('y1', h-pad);
+  axis.setAttribute('x2', w-pad); axis.setAttribute('y2', h-pad);
+  axis.setAttribute('stroke', '#cbd5e1'); svg.appendChild(axis);
+
+  data.forEach((d,i)=>{
+    const x = pad + i*bw + 6;
+
+    const hClosed = ((d.closed_wo||0)/max) * (h - pad*2);
+    const rClosed = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rClosed.setAttribute('x', x); rClosed.setAttribute('y', h-pad - hClosed);
+    rClosed.setAttribute('width', Math.max(2, bw-12)); rClosed.setAttribute('height', hClosed);
+    rClosed.setAttribute('fill', '#10b981'); svg.appendChild(rClosed);
+
+    const hOpen = ((d.open_wo||0)/max) * (h - pad*2);
+    const rOpen = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rOpen.setAttribute('x', x); rOpen.setAttribute('y', h-pad - hClosed - hOpen);
+    rOpen.setAttribute('width', Math.max(2, bw-12)); rOpen.setAttribute('height', hOpen);
+    rOpen.setAttribute('fill', '#ef4444'); svg.appendChild(rOpen);
+
+    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+    label.setAttribute('x', x + (bw-12)/2); label.setAttribute('y', h-10);
+    label.setAttribute('text-anchor','middle'); label.setAttribute('font-size','10');
+    label.textContent = String(d.site).slice(0,12); svg.appendChild(label);
   });
 }
 function drawPie(svg,openCount,closedCount){
@@ -401,6 +409,8 @@ function drawPie(svg,openCount,closedCount){
   t.setAttribute('x',w/2);t.setAttribute('y',h-8);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','12');
   t.textContent=`Under Repair ${(openCount/tot*100).toFixed(1)}%`; svg.appendChild(t);
 }
+
+/* Ranking & Sites */
 function renderRank(table,rows){
   const s=rank(rows), head=['#','site','total_wo','open_wo','closed_wo','open_rate_pct','avg_response_days','avg_repair_days'];
   table.innerHTML=`<thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody></tbody>`;
@@ -447,25 +457,35 @@ function winners(rows){
   document.getElementById('winners-list').textContent = top.map((r,i)=>`${i+1}) ${r.site}`).join('  •  ');
 }
 
-/* Render all */
+/* Render All */
 function renderAll(CMrows,PMrows){
   const c=groupCorrective(CMrows), p=groupPreventive(PMrows);
   const co=combine(c.arr,p.arr);
 
-  // KPIs
   const cmM=meta(c.arr,false), pmM=meta(p.arr,true), coM=meta(co,false);
-  renderKPIs('cm-kpis',cmM,false); renderKPIs('pm-kpis',pmM,true); renderKPIs('co-kpis',coM,false);
 
-  // Charts
-  drawBar(document.getElementById('cm-total'),c.arr,'site','total_wo');
-  drawPie(document.getElementById('cm-pie'),cmM.open_wo,cmM.closed_wo);
-  drawBar(document.getElementById('cm-repair'),c.arr,'site','avg_repair_days');
-  drawBar(document.getElementById('pm-total'),p.arr,'site','total_wo');
-  drawPie(document.getElementById('pm-pie'),pmM.open_wo,pmM.closed_wo);
-  drawBar(document.getElementById('pm-repair'),p.arr,'site','avg_repair_days');
-  drawBar(document.getElementById('co-total'),co,'site','total_wo');
-  drawPie(document.getElementById('co-pie'),coM.open_wo,coM.closed_wo);
-  drawBar(document.getElementById('co-repair'),co,'site','avg_repair_days');
+  // KPIs
+  renderKPIs('cm-kpis',cmM,false);
+  renderKPIs('pm-kpis',pmM,true);
+  renderKPIs('co-kpis',coM,false);
+
+  // ===== Corrective charts =====
+  drawBarH(document.getElementById('cm-top5-response'), top5ByAvg(c.arr,'avg_response_days'));
+  drawBarH(document.getElementById('cm-top5-repair'),   top5ByAvg(c.arr,'avg_repair_days'));
+  drawStackedFinishedUnder(document.getElementById('cm-finished-under'), c.arr);
+  drawPie(document.getElementById('cm-completion'), cmM.open_wo, cmM.closed_wo);
+
+  // ===== Preventive charts =====
+  drawBarH(document.getElementById('pm-top5-response'), top5ByAvg(p.arr,'avg_response_days'));
+  drawBarH(document.getElementById('pm-top5-repair'),   top5ByAvg(p.arr,'avg_repair_days'));
+  drawStackedFinishedUnder(document.getElementById('pm-finished-under'), p.arr);
+  drawPie(document.getElementById('pm-completion'), pmM.open_wo, pmM.closed_wo);
+
+  // ===== Combined charts =====
+  drawBarH(document.getElementById('co-top5-response'), top5ByAvg(co,'avg_response_days'));
+  drawBarH(document.getElementById('co-top5-repair'),   top5ByAvg(co,'avg_repair_days'));
+  drawStackedFinishedUnder(document.getElementById('co-finished-under'), co);
+  drawPie(document.getElementById('co-completion'), coM.open_wo, coM.closed_wo);
 
   // Tables & details
   renderRank(document.getElementById('cm-rank'),c.arr);
@@ -475,7 +495,6 @@ function renderAll(CMrows,PMrows){
   renderSites(document.getElementById('pm-sites'),p.arr);
   renderSites(document.getElementById('co-sites'),co);
 
-  // Winners chip
   winners(co);
 }
 
