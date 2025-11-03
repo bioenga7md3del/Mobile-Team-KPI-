@@ -1,515 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Mobile Team Monthly Maintenance KPIs – October 2025</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net"/>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<title>Mobile Team Monthly Maintenance KPIs – September 2025</title>
 <style>
 :root{
-  --bg:#f7f7fb; --panel:#ffffff; --muted:#6b7280; --text:#1f2937; --border:#e5e7eb;
-  --ring:#d1d5db; --shadow:0 10px 30px rgba(0,0,0,.05);
-  --gold:#ffedd5; --gold-border:#fbbf24; --gold-text:#b45309;
-  --green:#10b981; --red:#ef4444; --orange:#f59e0b; --subtle:#f3f4f6;
+  --bg:#f3f4f6; --panel:#ffffff; --muted:#6b7280; --text:#1e293b;
+  --card:#f9fafb; --border:#e5e7eb; --shadow:0 6px 18px rgba(0,0,0,.06);
+  --gold:#f59e0b;
 }
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial}
-.container{max-width:1200px;margin:22px auto;padding:0 12px}
-
-/* header */
-.header{display:grid;grid-template-columns:160px 1fr 260px;gap:12px;align-items:center}
-.brand-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;display:flex;justify-content:center;align-items:center;min-height:88px;box-shadow:var(--shadow)}
-.brand-box img{max-width:140px;height:auto}
-.title{text-align:center}
-.title h1{margin:6px 0 0 0;font-size:22px;font-weight:800}
-.title h1 span{display:block;font-size:18px;margin-top:4px}
-.title p{margin:2px 0;color:var(--muted);font-size:12px}
-.controls{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:var(--shadow)}
-.controls .row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
-.controls label{font-size:12px;color:#111827;min-width:110px}
-.controls input[type=file]{font-size:12px}
-.controls .btns{display:flex;gap:6px;justify-content:flex-end}
-.btn{padding:8px 12px;border:1px solid var(--ring);background:var(--panel);border-radius:999px;cursor:pointer;font-size:12px}
-.btn.primary{background:#111827;color:#fff;border-color:#111827}
-.btn:hover{filter:brightness(.97)}
-
-/* winners pill */
-.winners{background:var(--panel);border:1px solid var(--gold-border);border-radius:12px;padding:10px 12px;margin:14px 0;box-shadow:var(--shadow)}
-.winners .chip{display:inline-flex;gap:8px;align-items:center;background:var(--gold);padding:8px 12px;border:1px solid var(--gold-border);border-radius:10px;color:var(--gold-text);font-weight:800}
-
-/* tabs */
-.tabs{display:flex;gap:8px;margin:8px 0 10px 0}
-.tab{padding:8px 14px;border:1px solid var(--ring);background:var(--panel);border-radius:999px;cursor:pointer;font-size:12px}
-.tab.active{background:var(--subtle)}
-
-/* sections/cards */
-.section{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin:10px 0;box-shadow:var(--shadow)}
-.section .hd{padding:10px 12px;border-bottom:1px solid var(--border);font-weight:700}
-.section .bd{padding:12px}
-
-.grid2{display:grid;grid-template-columns:1fr;gap:12px}
-@media(min-width:1000px){.grid2{grid-template-columns:1fr 1fr}}
-
-.chart{width:100%;height:300px;border:1px solid var(--border);border-radius:10px;background:#fff}
-.kpigrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.kpi{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px}
-.kpi span{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}
-.kpi b{font-size:18px}
-.badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:700;margin-left:6px}
-.badge.red{background:rgba(239,68,68,.12);color:#7f1d1d;border:1px solid rgba(239,68,68,.35)}
-.badge.green{background:rgba(16,185,129,.12);color:#065f46;border:1px solid rgba(16,185,129,.35)}
-
-table{width:100%;border-collapse:collapse;border:1px solid var(--border);background:#fff;border-radius:10px;overflow:hidden}
-thead th{background:var(--subtle);text-align:left;padding:10px;font-size:13px;border-bottom:1px solid var(--border)}
-tbody td{padding:10px;border-bottom:1px solid var(--border);font-size:13px}
-
-/* collapsible sites */
-details.site{background:#fff;border:1px solid var(--border);border-radius:10px;margin-bottom:8px}
-details.site>summary{cursor:pointer;list-style:none;padding:10px 12px;font-weight:800}
-details.site>summary::-webkit-details-marker{display:none}
-.site-body{padding:0 12px 12px}
-.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.kv div{background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:8px}
-.kv span{color:var(--muted);font-size:12px}
-
-footer{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;margin:10px 0}
-footer img{height:26px;border-radius:6px;border:1px solid var(--border)}
-.view{display:none}.view.active{display:block}
-
-/* small helpers */
-.hidden{display:none}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Roboto,Arial,"Segoe UI",sans-serif}
+.container{max-width:1280px;margin:32px auto;padding:0 18px}
+.brandbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.brandlogo{background:#fff;border:1px solid var(--border);border-radius:16px;padding:8px;box-shadow:var(--shadow)}
+.brandlogo img{height:56px;display:block;background:#fff}
+header.brand{text-align:center}
+h1{margin:6px 0 2px 0;font-size:28px;font-weight:800}
+.subtitle{margin:0;color:var(--muted);font-size:14px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+.toolbar .input{background:#fff;border:1px solid var(--border);padding:8px 12px;border-radius:12px}
+.toolbar button{padding:10px 16px;border:1px solid var(--border);border-radius:999px;background:#fff;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
+.tabs{position:sticky;top:0;background:rgba(243,244,246,.95);backdrop-filter:saturate(140%) blur(4px);display:flex;gap:10px;margin:18px 0;padding:10px;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);z-index:2;justify-content:center;flex-wrap:wrap}
+.tab{padding:10px 16px;border:1px solid var(--border);background:#fff;border-radius:999px;cursor:pointer;font-weight:700}
+.tab.active{background:var(--card)}
+.view{display:none}
+.view.active{display:block}
+.grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:940px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 10px 0}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
+thead th{background:#eef2f7}
+.reveal{text-align:center;margin:6px 0 12px 0}
+.reveal button{padding:10px 16px;border:1px solid var(--border);border-radius:999px;background:#fff;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
+.winners{margin-top:10px;border:2px solid var(--gold);background:linear-gradient(180deg,#fffaf0,#fff4d6);border-radius:20px;padding:16px;box-shadow:var(--shadow);display:none}
+.winner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.winner-grid .slot{background:#fff;border:1px solid #fcd34d;border-radius:14px;padding:12px;text-align:center}
+.winner-grid .first{border-width:2px}
+details.tech{background:#fff;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;box-shadow:var(--shadow)}
+details.tech>summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:800;color:#111827}
+details.tech>summary::-webkit-details-marker{display:none}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}
+.kv div{background:#f9fafb;padding:8px;border:1px solid var(--border);border-radius:10px}
+.badge{display:inline-block;padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;margin-left:8px;color:#334155;font-weight:700}
+.bar{height:10px;background:#e5e7eb;border-radius:8px;overflow:hidden}
+.bar>span{display:block;height:100%;background:#60a5fa}
+footer{margin:14px 0;text-align:center}
+.small{color:#6b7280;font-size:12px}
 </style>
 </head>
 <body>
 <div class="container">
+  <div class="brandbar">
+    <div class="brandlogo"><img src="TabukCluster.jpeg" alt="Tabuk Health Cluster"></div>
+    <div class="brandlogo"><img src="FGC.jpeg" alt="FGC"></div>
+  </div>
+  <header class="brand">
+    <h1>Mobile Team Monthly Maintenance KPIs – September 2025</h1>
+    <div class="subtitle">Performance Analysis for the Mobile Maintenance Team – Tabuk Region</div>
+  </header>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="brand-box">
-      <img src="./TabukCluster.jpeg" alt="Tabuk Health Cluster" onerror="this.style.display='none'"/>
-    </div>
-    <div class="title">
-      <h1>Mobile Team Monthly Maintenance KPIs – <span>October 2025</span></h1>
-      <p>Corrective & Preventive Maintenance • Tabuk Health Cluster</p>
-      <p>Prepared by: قسم الصيانة الطبية بتجمع تبوك الصحي</p>
-    </div>
-    <div class="controls">
-      <div class="row">
-        <label>Corrective Wo.xlsx</label><input type="file" id="file-cm" accept=".xlsx,.xls"/>
-      </div>
-      <div class="row">
-        <label>Preventive ppm.xlsx</label><input type="file" id="file-pm" accept=".xlsx,.xls"/>
-      </div>
-      <div class="btns">
-        <button class="btn primary" id="btn-run">Load & Calculate</button>
-        <button class="btn" id="btn-lang">EN / AR</button>
-      </div>
-    </div>
+  <div class="toolbar">
+    <label class="input">Corrective CSV: <input id="file-corrective" type="file" accept=".csv"/></label>
+    <label class="input">PPM CSV: <input id="file-ppm" type="file" accept=".csv"/></label>
+    <button id="build">Build Dashboard</button>
+    <span class="small">Hint: save Wo.xlsx &amp; ppm.xlsx as CSV first</span>
   </div>
 
-  <!-- Winners pill -->
-  <div class="winners">
-    <span class="chip">🏆 October 2025 Winners</span>
-    <span id="winners-list" style="margin-left:8px;color:var(--gold-text);font-weight:700"></span>
-  </div>
-
-  <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" id="tab-cm">Corrective (WO)</button>
-    <button class="tab" id="tab-pm">Preventive (PPM)</button>
-    <button class="tab" id="tab-co">Combined</button>
+    <button class="tab active" data-target="combined">🏆 Combined (Overall)</button>
+    <button class="tab" data-target="corrective">🔧 Corrective WO</button>
+    <button class="tab" data-target="ppm">🛠️ PPM WO</button>
   </div>
 
-  <!-- Corrective -->
-  <div class="view active" id="cm">
-    <div class="section"><div class="hd">Summary</div><div class="bd"><div class="kpigrid" id="cm-kpis"></div></div></div>
-
-    <div class="grid2">
-      <div class="section"><div class="hd">Top 5 (Response)</div><div class="bd"><svg id="cm-top5-response" class="chart"></svg></div></div>
-      <div class="section"><div class="hd">Top 5 (Repair)</div><div class="bd"><svg id="cm-top5-repair" class="chart"></svg></div></div>
-    </div>
-
-    <div class="grid2">
-      <div class="section"><div class="hd">Finished vs Under Repair</div><div class="bd"><svg id="cm-finished-under" class="chart"></svg></div></div>
-      <div class="section"><div class="hd">Completion</div><div class="bd"><svg id="cm-completion" class="chart"></svg></div></div>
-    </div>
-
-    <div class="section"><div class="hd">Corrective – Ranking (Top 12)</div><div class="bd"><div style="overflow:auto"><table id="cm-rank"></table></div></div></div>
-    <div class="section"><div class="hd">Sites – Details & Recommendations</div><div class="bd" id="cm-sites"></div></div>
-  </div>
-
-  <!-- Preventive -->
-  <div class="view" id="pm">
-    <div class="section"><div class="hd">Summary</div><div class="bd"><div class="kpigrid" id="pm-kpis"></div></div></div>
-
-    <div class="grid2">
-      <div class="section"><div class="hd">Top 5 (Response)</div><div class="bd"><svg id="pm-top5-response" class="chart"></svg></div></div>
-      <div class="section"><div class="hd">Top 5 (Repair)</div><div class="bd"><svg id="pm-top5-repair" class="chart"></svg></div></div>
-    </div>
-
-    <div class="grid2">
-      <div class="section"><div class="hd">Finished vs Under Repair</div><div class="bd"><svg id="pm-finished-under" class="chart"></svg></div></div>
-      <div class="section"><div class="hd">Completion</div><div class="bd"><svg id="pm-completion" class="chart"></svg></div></div>
-    </div>
-
-    <div class="section"><div class="hd">Preventive – Ranking (Top 12)</div><div class="bd"><div style="overflow:auto"><table id="pm-rank"></table></div></div></div>
-    <div class="section"><div class="hd">Sites – Details & Recommendations</div><div class="bd" id="pm-sites"></div></div>
-  </div>
-
-  <!-- Combined -->
-  <div class="view" id="co">
-    <div class="section"><div class="hd">Summary</div><div class="bd"><div class="kpigrid" id="co-kpis"></div></div></div>
-
-    <div class="grid2">
-      <div class="section"><div class="hd">Top 5 (Response)</div><div class="bd"><svg id="co-top5-response" class="chart"></svg></div></div>
-      <div class="section"><div class="hd">Top 5 (Repair)</div><div class="bd"><svg id="co-top5-repair" class="chart"></svg></div></div>
-    </div>
-
-    <div class="grid2">
-      <div class="section"><div class="hd">Finished vs Under Repair</div><div class="bd"><svg id="co-finished-under" class="chart"></svg></div></div>
-      <div class="section"><div class="hd">Completion</div><div class="bd"><svg id="co-completion" class="chart"></svg></div></div>
-    </div>
-
-    <div class="section"><div class="hd">Combined – Ranking (Top 12)</div><div class="bd"><div style="overflow:auto"><table id="co-rank"></table></div></div></div>
-    <div class="section"><div class="hd">Sites – Details & Recommendations</div><div class="bd" id="co-sites"></div></div>
-  </div>
+  <div id="combined" class="view active"></div>
+  <div id="corrective" class="view"></div>
+  <div id="ppm" class="view"></div>
 
   <footer>
-    <img src="./FGC.jpeg" alt="FGC" onerror="this.style.display='none'"/>
-    <span id="gentime"></span>
+    <strong>Evaluation prepared by Eng. Ahmed Adel – Mobile Maintenance Project Manager</strong>
   </footer>
-
 </div>
 
 <script>
-/* أعمدة الملف */
-const COL={site:'Site',resp:'Response KPI',rep:'Repierd KPI',ecri:'ECRI Code'};
-
-/* تبويبات */
-[['tab-cm','cm'],['tab-pm','pm'],['tab-co','co']].forEach(([b,v])=>{
-  document.getElementById(b).addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-    document.getElementById(b).classList.add('active');
-    document.getElementById(v).classList.add('active');
-  });
-});
-
-/* لغة */
-document.getElementById('btn-lang').addEventListener('click',()=>{
-  const html=document.documentElement;
-  if(html.getAttribute('dir')==='rtl'){ html.removeAttribute('dir'); html.setAttribute('lang','en'); }
-  else{ html.setAttribute('dir','rtl'); html.setAttribute('lang','ar'); }
-});
-
-/* قراءة Excel (أكبر شيت) */
-function readExcel(f){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=e=>{
-      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
-      const name=wb.SheetNames.reduce((a,b)=>{
-        const la=XLSX.utils.sheet_to_json(wb.Sheets[a],{defval:null}).length;
-        const lb=XLSX.utils.sheet_to_json(wb.Sheets[b],{defval:null}).length;
-        return lb>la?b:a;
-      });
-      res(XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:null}));
-    };
-    r.onerror=rej; r.readAsArrayBuffer(f);
-  });
-}
-
-document.getElementById('btn-run').addEventListener('click',async()=>{
-  const fcm=document.getElementById('file-cm').files[0];
-  const fpm=document.getElementById('file-pm').files[0];
-  if(!fcm||!fpm){ alert('Please select Wo.xlsx and ppm.xlsx'); return; }
-  const CM=await readExcel(fcm);
-  const PM=await readExcel(fpm);
-  renderAll(CM,PM);
-  document.getElementById('gentime').textContent='Generated '+new Date().toLocaleString();
-});
-
-/* Helpers */
-const isNullish=v=>v===null||v===undefined||String(v).trim().toLowerCase()===''||String(v).trim().toLowerCase()==='null';
-const toNum=v=>isNullish(v)?NaN:Number(String(v).replaceAll(',',''));
-const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
-
-/* Corrective: open لو Repierd KPI فاضي */
-function groupCorrective(rows){
-  const map=new Map(), devices=new Map();
-  rows.forEach(r=>{
-    const site=(r[COL.site]??'(blank)').toString().trim();
-    const resp=toNum(r[COL.resp]), rep=toNum(r[COL.rep]);
-    const open=isNullish(r[COL.rep]);
-    if(!map.has(site)) map.set(site,{site,total:0,open:0,resp:[],rep:[]});
-    const s=map.get(site); s.total++; if(open) s.open++;
-    if(!Number.isNaN(resp)) s.resp.push(resp);
-    if(!Number.isNaN(rep)) s.rep.push(rep);
-    const d=(r[COL.ecri]??'(blank)').toString().trim();
-    devices.set(d,(devices.get(d)||0)+1);
-  });
-  const arr=[...map.values()].map(s=>({
-    site:s.site,total_wo:s.total,open_wo:s.open,closed_wo:s.total-s.open,
-    avg_response_days:s.resp.length?avg(s.resp):null,
-    avg_repair_days:s.rep.length?avg(s.rep):null,
-    open_rate_pct:s.total?(s.open/s.total*100):null
-  }));
-  const top=[...devices.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(([device,count])=>({device,count}));
-  return {arr,top};
-}
-
-/* Preventive: مغلق لو Repierd KPI رقم >=0 ؛ مفتوح لو rep فاضي أو response فاضي */
-function groupPreventive(rows){
-  const map=new Map();
-  rows.forEach(r=>{
-    const site=(r[COL.site]??'(blank)').toString().trim();
-    const resp=toNum(r[COL.resp]), rep=toNum(r[COL.rep]);
-    const respBlank=isNullish(r[COL.resp]), repBlank=isNullish(r[COL.rep]);
-    const isClosed=Number.isFinite(rep)&&rep>=0;
-    const isOpen=repBlank||respBlank;
-    const notOpened=respBlank;
-    if(!map.has(site)) map.set(site,{site,total:0,open:0,closed:0,notOpened:0,resp:[],rep:[]});
-    const s=map.get(site);
-    s.total++; if(isOpen) s.open++; if(notOpened) s.notOpened++;
-    if(isClosed) s.closed++; else s.closed=s.total-s.open;
-    if(!Number.isNaN(resp)) s.resp.push(resp); if(!Number.isNaN(rep)) s.rep.push(rep);
-  });
-  const arr=[...map.values()].map(s=>({
-    site:s.site,total_wo:s.total,open_wo:s.open,closed_wo:s.closed,not_opened:s.notOpened,
-    avg_response_days:s.resp.length?avg(s.resp):null,
-    avg_repair_days:s.rep.length?avg(s.rep):null,
-    open_rate_pct:s.total?(s.open/s.total*100):null
-  }));
-  return {arr};
-}
-
-/* Combine */
-function combine(cm,pm){
-  const map=new Map();
-  function add(a){ a.forEach(r=>{ if(!map.has(r.site)) map.set(r.site,{site:r.site,total:0,open:0,closed:0,resps:[],reps:[]});
-    const m=map.get(r.site); m.total+=r.total_wo; m.open+=r.open_wo; m.closed+=r.closed_wo;
-    if(Number.isFinite(r.avg_response_days)) m.resps.push(r.avg_response_days);
-    if(Number.isFinite(r.avg_repair_days)) m.reps.push(r.avg_repair_days);
-  });}
-  add(cm); add(pm);
-  return [...map.values()].map(m=>({
-    site:m.site,total_wo:m.total,open_wo:m.open,closed_wo:m.closed,
-    avg_response_days:m.resps.length?avg(m.resps):null,
-    avg_repair_days:m.reps.length?avg(m.reps):null,
-    open_rate_pct:m.total?(m.open/m.total*100):null
-  }));
-}
-function meta(arr,withNot=false){
-  const t=arr.reduce((a,b)=>a+b.total_wo,0), o=arr.reduce((a,b)=>a+b.open_wo,0), c=arr.reduce((a,b)=>a+b.closed_wo,0);
-  const or=t?(o/t*100):0, resp=arr.map(x=>x.avg_response_days).filter(Number.isFinite), rep=arr.map(x=>x.avg_repair_days).filter(Number.isFinite);
-  const notO=withNot?arr.reduce((a,b)=>a+(b.not_opened||0),0):null;
-  return {total_wo:t,open_wo:o,closed_wo:c,open_rate_pct:or,avg_response_days:resp.length?avg(resp):null,avg_repair_days:rep.length?avg(rep):null,not_opened:notO};
-}
-function rank(rows){
-  return rows.slice().sort((a,b)=>{
-    const k1=(a.open_rate_pct??1e9)-(b.open_rate_pct??1e9);
-    const k2=(a.avg_repair_days??1e9)-(b.avg_repair_days??1e9);
-    const k3=(a.avg_response_days??1e9)-(b.avg_response_days??1e9);
-    const k4=(b.total_wo??0)-(a.total_wo??0);
-    return k1||k2||k3||k4;
-  });
-}
-
-/* ===== رسومات مطابقة للّياوت ===== */
-function top5ByAvg(rows, keyAvg, labelKey='site'){
-  const valid = rows.filter(r => Number.isFinite(r[keyAvg]));
-  valid.sort((a,b) => a[keyAvg] - b[keyAvg]);
-  return valid.slice(0, 5).map(r => ({ label: r[labelKey], value: r[keyAvg] }));
-}
-function drawBarH(svg, items){ // أعمدة أفقية
-  const w = svg.clientWidth, h = svg.clientHeight, pad = 40;
-  svg.innerHTML = '';
-  if(!items.length){
-    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x', w/2); t.setAttribute('y', h/2);
-    t.setAttribute('text-anchor','middle'); t.textContent = 'No data';
-    svg.appendChild(t); return;
+/* ------- CSV helpers ------- */
+function parseCSV(text){
+  // simple CSV parser (handles commas, basic quotes)
+  const rows=[]; let i=0, cur="", inQ=false; const push=()=>{rows[rows.length-1].push(cur);cur="";}
+  rows.push([]);
+  for(;i<text.length;i++){
+    const c=text[i], n=text[i+1];
+    if(inQ){
+      if(c==='"' && n==='"'){cur+='"'; i++; continue;}
+      if(c==='"'){inQ=false; continue;}
+      cur+=c; continue;
+    }
+    if(c==='"' && cur===""){inQ=true; continue;}
+    if(c===','){push(); continue;}
+    if(c==='\n'){push(); rows.push([]); continue;}
+    if(c==='\r'){continue;}
+    cur+=c;
   }
-  const max = Math.max(1, ...items.map(d => +d.value || 0));
-  const rowH = (h - pad*2) / items.length;
-
-  const axis = document.createElementNS('http://www.w3.org/2000/svg','line');
-  axis.setAttribute('x1', pad); axis.setAttribute('y1', h-pad);
-  axis.setAttribute('x2', w-pad); axis.setAttribute('y2', h-pad);
-  axis.setAttribute('stroke', '#cbd5e1'); svg.appendChild(axis);
-
-  items.forEach((d,i)=>{
-    const y = pad + i*rowH + 6;
-    const barW = ((d.value || 0) / max) * (w - pad*2);
-    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rect.setAttribute('x', pad); rect.setAttribute('y', y);
-    rect.setAttribute('width', Math.max(2, barW)); rect.setAttribute('height', Math.max(10, rowH-12));
-    rect.setAttribute('fill', '#f59e0b'); svg.appendChild(rect);
-
-    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
-    label.setAttribute('x', pad-6); label.setAttribute('y', y + (rowH-12)/2 + 8);
-    label.setAttribute('font-size','11'); label.setAttribute('text-anchor','end');
-    label.textContent = d.label; svg.appendChild(label);
-
-    const val = document.createElementNS('http://www.w3.org/2000/svg','text');
-    val.setAttribute('x', pad + barW + 6); val.setAttribute('y', y + (rowH-12)/2 + 8);
-    val.setAttribute('font-size','11');
-    val.textContent = (Number(d.value).toFixed(2)) + ' d'; svg.appendChild(val);
+  push();
+  // drop last empty row if any
+  if(rows.length && rows[rows.length-1].length===1 && rows[rows.length-1][0]==="") rows.pop();
+  return rows;
+}
+function toObjects(rows){
+  if(!rows.length) return [];
+  const header = rows[0].map(h=>String(h||"").trim());
+  return rows.slice(1).map(r=>{
+    const o={};
+    header.forEach((h,idx)=>{o[h]=r[idx]!==undefined?r[idx]:"";});
+    return o;
   });
 }
-function drawStackedFinishedUnder(svg, rows){
-  const w = svg.clientWidth, h = svg.clientHeight, pad = 40;
-  svg.innerHTML = '';
-  const data = rows.slice().sort((a,b)=> (b.total_wo||0) - (a.total_wo||0)).slice(0,8);
-  if(!data.length){ const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x', w/2); t.setAttribute('y', h/2); t.setAttribute('text-anchor','middle'); t.textContent='No data';
-    svg.appendChild(t); return; }
-
-  const bw = (w - pad*2) / data.length;
-  const max = Math.max(1, ...data.map(d => (d.closed_wo||0) + (d.open_wo||0)));
-
-  const axis = document.createElementNS('http://www.w3.org/2000/svg','line');
-  axis.setAttribute('x1', pad); axis.setAttribute('y1', h-pad);
-  axis.setAttribute('x2', w-pad); axis.setAttribute('y2', h-pad);
-  axis.setAttribute('stroke', '#cbd5e1'); svg.appendChild(axis);
-
-  data.forEach((d,i)=>{
-    const x = pad + i*bw + 6;
-
-    const hClosed = ((d.closed_wo||0)/max) * (h - pad*2);
-    const rClosed = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rClosed.setAttribute('x', x); rClosed.setAttribute('y', h-pad - hClosed);
-    rClosed.setAttribute('width', Math.max(2, bw-12)); rClosed.setAttribute('height', hClosed);
-    rClosed.setAttribute('fill', '#10b981'); svg.appendChild(rClosed);
-
-    const hOpen = ((d.open_wo||0)/max) * (h - pad*2);
-    const rOpen = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rOpen.setAttribute('x', x); rOpen.setAttribute('y', h-pad - hClosed - hOpen);
-    rOpen.setAttribute('width', Math.max(2, bw-12)); rOpen.setAttribute('height', hOpen);
-    rOpen.setAttribute('fill', '#ef4444'); svg.appendChild(rOpen);
-
-    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
-    label.setAttribute('x', x + (bw-12)/2); label.setAttribute('y', h-10);
-    label.setAttribute('text-anchor','middle'); label.setAttribute('font-size','10');
-    label.textContent = String(d.site).slice(0,12); svg.appendChild(label);
-  });
+function num(v){
+  if(v===null||v===undefined) return NaN;
+  const s=String(v).trim();
+  if(s==="") return NaN;
+  const n=Number(s.replace(/,/g,""));
+  return isNaN(n)?NaN:n;
 }
-function drawPie(svg,openCount,closedCount){
-  const w=svg.clientWidth,h=svg.clientHeight; svg.innerHTML='';
-  const r=Math.min(w,h)/2-10,cx=w/2,cy=h/2,tot=Math.max(1,openCount+closedCount);
-  const parts=[{v:openCount,col:'var(--red)',label:'Under Repair'},{v:closedCount,col:'var(--green)',label:'Finished'}];
-  let a0=-Math.PI/2;
-  parts.forEach(p=>{
-    const ang=p.v/tot*Math.PI*2,a1=a0+ang,x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0),x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
-    const big=ang>Math.PI?1:0, path=document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('d',`M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 ${big} 1 ${x1} ${y1} Z`); path.setAttribute('fill',p.col); svg.appendChild(path); a0=a1;
-  });
-  const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-  t.setAttribute('x',w/2);t.setAttribute('y',h-8);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','12');
-  t.textContent=`Under Repair ${(openCount/tot*100).toFixed(1)}%`; svg.appendChild(t);
+const ALIASES = {
+  "Mohamed Safwat/Ahmed Sultan Alanezi":"Mohamed Safwat / Ahmed Sultan Alanezi",
+  "Mohamed Safwat / Ahmed Sultan Alanezi":"Mohamed Safwat / Ahmed Sultan Alanezi",
+  "Akhter Hussain/Ateeq Elatawy":"Akhter Hussain / Ateeq Elatawy",
+  "Akhter Hussain / Ateeq Elatawy":"Akhter Hussain / Ateeq Elatawy",
+  "Mohamed Ansar hassan/Saud Falah Albalawi":"Mohamed Ansar hassan / Saud Falah Albalawi",
+  "Saud Falah Albalawi/Mohamed Ansar hassan":"Mohamed Ansar hassan / Saud Falah Albalawi",
+  "Ahmed Mohamed Moussa/Abdelrahman Elhiwiti":"Ahmed Mohamed Moussa / Abdelrahman Elhiwiti",
+  "Mohamed Safwat/Ahmed Sultan Alanzi":"Mohamed Safwat / Ahmed Sultan Alanezi",
+  "Mohamed Safwat / Ahmed Sultan Alanzi":"Mohamed Safwat / Ahmed Sultan Alanezi"
+};
+function normName(s){
+  if(s==null) return "Unassigned";
+  let t=String(s).trim().replace(/\s*\/\s*/g," / ");
+  return ALIASES[t] || t;
 }
-
-/* Ranking & Sites */
-function renderRank(table,rows){
-  const s=rank(rows), head=['#','site','total_wo','open_wo','closed_wo','open_rate_pct','avg_response_days','avg_repair_days'];
-  table.innerHTML=`<thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody></tbody>`;
-  const tb=table.querySelector('tbody');
-  s.slice(0,12).forEach((r,i)=>{
-    const tr=document.createElement('tr');
-    [i+1,r.site,r.total_wo,r.open_wo,r.closed_wo,
-     r.open_rate_pct!=null?r.open_rate_pct.toFixed(1)+'%':'—',
-     r.avg_response_days!=null?r.avg_response_days.toFixed(2):'—',
-     r.avg_repair_days!=null?r.avg_repair_days.toFixed(2):'—'
-    ].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});
-    tb.appendChild(tr);
+function detectCols(header){
+  let tech=null, resp=null, rep=null;
+  header.forEach((h,idx)=>{
+    const lc=h.toLowerCase();
+    if(!tech && (lc.includes("assigned to")||lc.includes("technician")||lc.includes("الفني")||lc.includes("assignee")||lc==="assigned")) tech=idx;
+    if(!resp && lc.includes("kpi") && (lc.includes("res")||lc.includes("resp")||lc.includes("response")||lc.includes("respose"))) resp=idx;
+    if(!rep  && lc.includes("kpi") && (lc.includes("rep")||lc.includes("repair")||lc.includes("repaired")||lc.includes("repierd"))) rep=idx;
   });
+  if(tech==null) tech=0;
+  if(resp==null){ header.forEach((h,i)=>{ if(/res.*kpi/i.test(h)) resp=i; }); }
+  if(rep==null){ header.forEach((h,i)=>{ if(/rep.*kpi/i.test(h)) rep=i; }); }
+  return {tech,resp,rep};
 }
-function recos(r){
-  const out=[]; if((r.open_rate_pct||0)>30) out.push('Reduce backlog with daily aging & escalation >7d');
-  if((r.avg_repair_days||0)>5) out.push('Improve parts readiness & vendor SLA');
-  if((r.avg_response_days||0)>2) out.push('Faster triage/dispatch within 2 hours');
-  if(!out.length) out.push('Good performance – keep weekly monitoring');
+function computeKPI(rows){
+  if(!rows.length) return [];
+  const cols=detectCols(rows[0]);
+  const body=rows.slice(1);
+  const map=new Map();
+  body.forEach(r=>{
+    const name=normName(r[cols.tech]);
+    const resp=num(r[cols.resp]);
+    const rep =num(r[cols.rep]);
+    const under = isNaN(rep); // no Repair KPI => still under repair
+    if(!map.has(name)) map.set(name,{Technician:name, n:0, respSum:0, repSum:0, repN:0, finished:0, under:0});
+    const o=map.get(name);
+    o.n+=1;
+    if(!isNaN(resp)) o.respSum+=resp;
+    if(!isNaN(rep)) {o.repSum+=rep; o.repN+=1;}
+    if(under) o.under+=1; else o.finished+=1;
+  });
+  const out=[...map.values()].map(o=>{
+    const Avg_Response_Days = o.n? +(o.respSum/o.n).toFixed(2):0;
+    const Avg_Repair_Days   = o.repN? +(o.repSum/o.repN).toFixed(2):0;
+    const Finished=o.finished, UnderRepair=o.under, WorkOrders=o.n;
+    const denom=Finished+UnderRepair;
+    const CompletionRate = denom? +((Finished/denom)*100).toFixed(1):0;
+    return {Technician:o.Technician, Avg_Response_Days, Avg_Repair_Days, Finished, UnderRepair, CompletionRate_%:CompletionRate, WorkOrders};
+  });
   return out;
 }
-function renderSites(el,rows){
-  el.innerHTML='';
-  rows.forEach(r=>{
-    const det=document.createElement('details'); det.className='site';
-    const sum=document.createElement('summary'); sum.textContent=r.site;
-    const body=document.createElement('div'); body.className='site-body';
-    const kv=document.createElement('div'); kv.className='kv';
-    kv.innerHTML=`
-      <div><span>Total WOs</span><b>${r.total_wo}</b></div>
-      <div><span>Open WOs</span><b>${r.open_wo} <i class="badge red">Open</i></b></div>
-      <div><span>Closed WOs</span><b>${r.closed_wo} <i class="badge green">Closed</i></b></div>
-      <div><span>Open %</span><b>${r.open_rate_pct!=null?r.open_rate_pct.toFixed(1)+'%':'—'}</b></div>
-      <div><span>Avg. Response (days)</span><b>${r.avg_response_days!=null?r.avg_response_days.toFixed(2):'—'}</b></div>
-      <div><span>Avg. Repair (days)</span><b>${r.avg_repair_days!=null?r.avg_repair_days.toFixed(2):'—'}</b></div>`;
-    body.innerHTML = kv.outerHTML + `<div style="margin-top:8px"><b>Recommendations</b><ul>${recos(r).map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
-    det.appendChild(sum); det.appendChild(body); el.appendChild(det);
+function rankLogic(arr){
+  return arr.slice().sort((a,b)=>{
+    if(b.CompletionRate_%!==a.CompletionRate_%) return b.CompletionRate_%-a.CompletionRate_%;
+    if(a.Avg_Response_Days!==b.Avg_Response_Days) return a.Avg_Response_Days-b.Avg_Response_Days;
+    if(a.Avg_Repair_Days!==b.Avg_Repair_Days) return a.Avg_Repair_Days-b.Avg_Repair_Days;
+    return b.WorkOrders-a.WorkOrders; // more WOs wins tie
   });
 }
-
-/* Winners (Top 3 by combined ranking) */
-function winners(rows){
-  const top=rank(rows).slice(0,3);
-  document.getElementById('winners-list').textContent = top.map((r,i)=>`${i+1}) ${r.site}`).join('  •  ');
+function weightedCombine(cor, ppm){
+  const byName=new Map();
+  function add(arr){
+    arr.forEach(x=>{
+      const k=x.Technician;
+      if(!byName.has(k)) byName.set(k,{Technician:k, w:0, respW:0, repW:0, fin:0, und:0});
+      const o=byName.get(k);
+      o.w+=x.WorkOrders;
+      o.respW+=x.Avg_Response_Days*x.WorkOrders;
+      o.repW +=x.Avg_Repair_Days*x.WorkOrders;
+      o.fin+=x.Finished; o.und+=x.UnderRepair;
+    });
+  }
+  add(cor); add(ppm);
+  return [...byName.values()].map(o=>{
+    const w = Math.max(1,o.w);
+    const Avg_Response_Days = +(o.respW/w).toFixed(2);
+    const Avg_Repair_Days   = +(o.repW/w).toFixed(2);
+    const Finished=o.fin, UnderRepair=o.und, WorkOrders=o.w;
+    const denom=Finished+UnderRepair;
+    const CompletionRate_% = denom? +((Finished/denom)*100).toFixed(1):0;
+    return {Technician:o.Technician, Avg_Response_Days, Avg_Repair_Days, Finished, UnderRepair, CompletionRate_% , WorkOrders};
+  });
 }
-
-/* Render All */
-function renderAll(CMrows,PMrows){
-  const c=groupCorrective(CMrows), p=groupPreventive(PMrows);
-  const co=combine(c.arr,p.arr);
-
-  const cmM=meta(c.arr,false), pmM=meta(p.arr,true), coM=meta(co,false);
-
-  // KPIs
-  renderKPIs('cm-kpis',cmM,false);
-  renderKPIs('pm-kpis',pmM,true);
-  renderKPIs('co-kpis',coM,false);
-
-  // ===== Corrective charts =====
-  drawBarH(document.getElementById('cm-top5-response'), top5ByAvg(c.arr,'avg_response_days'));
-  drawBarH(document.getElementById('cm-top5-repair'),   top5ByAvg(c.arr,'avg_repair_days'));
-  drawStackedFinishedUnder(document.getElementById('cm-finished-under'), c.arr);
-  drawPie(document.getElementById('cm-completion'), cmM.open_wo, cmM.closed_wo);
-
-  // ===== Preventive charts =====
-  drawBarH(document.getElementById('pm-top5-response'), top5ByAvg(p.arr,'avg_response_days'));
-  drawBarH(document.getElementById('pm-top5-repair'),   top5ByAvg(p.arr,'avg_repair_days'));
-  drawStackedFinishedUnder(document.getElementById('pm-finished-under'), p.arr);
-  drawPie(document.getElementById('pm-completion'), pmM.open_wo, pmM.closed_wo);
-
-  // ===== Combined charts =====
-  drawBarH(document.getElementById('co-top5-response'), top5ByAvg(co,'avg_response_days'));
-  drawBarH(document.getElementById('co-top5-repair'),   top5ByAvg(co,'avg_repair_days'));
-  drawStackedFinishedUnder(document.getElementById('co-finished-under'), co);
-  drawPie(document.getElementById('co-completion'), coM.open_wo, coM.closed_wo);
-
-  // Tables & details
-  renderRank(document.getElementById('cm-rank'),c.arr);
-  renderRank(document.getElementById('pm-rank'),p.arr);
-  renderRank(document.getElementById('co-rank'),co);
-  renderSites(document.getElementById('cm-sites'),c.arr);
-  renderSites(document.getElementById('pm-sites'),p.arr);
-  renderSites(document.getElementById('co-sites'),co);
-
-  winners(co);
+function percentBar(pct){
+  const v=Math.max(0,Math.min(100, pct||0));
+  return `<div class="bar"><span style="width:${v}%"></span></div>`;
 }
-
-/* KPI blocks render */
-function renderKPIs(id,m,extra){
-  document.getElementById(id).innerHTML = `
-    <div class="kpi"><span>Total Work Orders</span><b>${m.total_wo.toLocaleString()}</b></div>
-    <div class="kpi"><span>Open Work Orders</span><b>${m.open_wo.toLocaleString()} <i class="badge red">Open</i></b></div>
-    <div class="kpi"><span>Closed Work Orders</span><b>${m.closed_wo.toLocaleString()} <i class="badge green">Closed</i></b></div>
-    <div class="kpi"><span>Open Rate</span><b>${m.open_rate_pct.toFixed(1)}%</b></div>
-    <div class="kpi"><span>Avg. Response (days)</span><b>${m.avg_response_days!=null?m.avg_response_days.toFixed(2):'—'}</b></div>
-    <div class="kpi"><span>Avg. Repair (days)</span><b>${m.avg_repair_days!=null?m.avg_repair_days.toFixed(2):'—'}</b></div>
-    ${extra && m.not_opened!=null ? `<div class="kpi"><span>Not Opened (Response KPI blank)</span><b>${m.not_opened.toLocaleString()}</b></div>`:''}
+function tableHTML(arr, title){
+  const rows=arr.map(r=>`
+    <tr>
+      <td><button class="link-tech" data-name="${r.Technician}">${r.Technician}</button></td>
+      <td>${r.Avg_Response_Days}</td>
+      <td>${r.Avg_Repair_Days}</td>
+      <td>${r.Finished}</td>
+      <td>${r.UnderRepair}</td>
+      <td>${r.CompletionRate_%}% ${percentBar(r.CompletionRate_%)}</td>
+      <td>${r.WorkOrders}</td>
+    </tr>`).join("");
+  return `
+    <div class="card">
+      <h3>Technicians – KPI Summary <span class="badge">${title}</span></h3>
+      <table>
+        <thead><tr>
+          <th>Technician</th><th>Avg_Response_Days</th><th>Avg_Repair_Days</th>
+          <th>Finished</th><th>UnderRepair</th><th>CompletionRate_%</th><th>WorkOrders</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+function winnersHTML(title, ranked){
+  const top1=ranked[0]?.Technician||"", top2=ranked[1]?.Technician||"", top3=ranked[2]?.Technician||"", last=ranked[ranked.length-1]?.Technician||"";
+  const key=title.toLowerCase().replace(/\s+/g,'_');
+  return `
+    <div class="reveal">
+      <button id="reveal_${key}">Click to Reveal Winners 🏆</button>
+      <div class="winners" id="wins_${key}" style="display:none">
+        <div class="winner-grid">
+          <div class="slot first"><b>#1</b><div>${top1}</div></div>
+          <div class="slot"><b>#2</b><div>${top2}</div></div>
+          <div class="slot"><b>#3</b><div>${top3}</div></div>
+          <div class="slot last"><b>Last</b><div>${last}</div></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function(){
+        var b=document.getElementById('reveal_${key}');
+        var w=document.getElementById('wins_${key}');
+        if(b&&w){
+          b.addEventListener('click', function(){
+            var open=w.style.display==='block';
+            w.style.display=open?'none':'block';
+            b.textContent=open?'Click to Reveal Winners 🏆':'Hide Winners';
+          });
+        }
+      })();
+    </script>`;
+}
+function drilldownHTML(arr){
+  if(!arr.length) return "";
+  const respMed = median(arr.map(a=>a.Avg_Response_Days));
+  const repMed  = median(arr.map(a=>a.Avg_Repair_Days));
+  const compMed = median(arr.map(a=>a.CompletionRate_%));
+  const items = arr.map(r=>{
+    const recs = [];
+    recs.push(r.Avg_Response_Days<=respMed ? "Great response — keep same-day acknowledgement." : "Aim for same-day acknowledgement on new WOs.");
+    recs.push(r.Avg_Repair_Days<=repMed ? "Solid repair speed — document fixes to playbook." : "Prepare spares & pre-diagnosis to reduce downtime.");
+    recs.push(r.CompletionRate_%>=compMed ? "Good closure rate — keep daily wrap-up." : "Close pending jobs daily & escalate blockers early.");
+    return `
+      <details class="tech"><summary>${r.Technician}</summary>
+        <div class="kv">
+          <div><span>Work Orders</span><strong>${r.WorkOrders}</strong></div>
+          <div><span>Avg Response (d)</span><strong>${r.Avg_Response_Days}</strong></div>
+          <div><span>Avg Repair (d)</span><strong>${r.Avg_Repair_Days}</strong></div>
+          <div><span>Finished</span><strong>${r.Finished}</strong></div>
+          <div><span>Under Repair</span><strong>${r.UnderRepair}</strong></div>
+          <div><span>Completion %</span><strong>${r.CompletionRate_%}</strong></div>
+        </div>
+        <h4>How KPIs are calculated</h4>
+        <ul>
+          <li><b>Avg Response</b> = mean(Start − Fail) days</li>
+          <li><b>Avg Repair</b> = mean(Sign Off − Fail) days</li>
+          <li><b>Completion</b> = Finished ÷ (Finished + Under Repair)</li>
+        </ul>
+        <h4>Recommendations</h4>
+        <ul>${recs.map(x=>`<li>${x}</li>`).join("")}</ul>
+      </details>`;
+  }).join("");
+  return `<div class="card"><h3>Per-Technician Drill-down & Recommendations</h3>${items}</div>`;
+}
+function median(arr){
+  const v=arr.filter(x=>typeof x==="number" && !isNaN(x)).sort((a,b)=>a-b);
+  if(!v.length) return 0;
+  const m=Math.floor(v.length/2);
+  return v.length%2? v[m] : (v[m-1]+v[m])/2;
+}
+function buildSection(targetEl, title, ranked){
+  targetEl.innerHTML = `
+    ${winnersHTML(title, ranked)}
+    ${tableHTML(ranked, title)}
+    ${drilldownHTML(ranked)}
   `;
 }
+/* ------- UI wiring ------- */
+const elCombined = document.getElementById("combined");
+const elCorrective = document.getElementById("corrective");
+const elPPM = document.getElementById("ppm");
+document.querySelectorAll('.tab').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+document.getElementById("build").addEventListener("click", async ()=>{
+  const fCor = document.getElementById("file-corrective").files[0];
+  const fPPM = document.getElementById("file-ppm").files[0];
+  if(!fCor || !fPPM){ alert("Please select both Corrective CSV and PPM CSV."); return; }
+  const [t1, t2] = await Promise.all([fCor.text(), fPPM.text()]);
+  const rowsCor = parseCSV(t1), rowsPPM = parseCSV(t2);
+
+  const cor = rankLogic( computeKPI(rowsCor) );
+  const ppm = rankLogic( computeKPI(rowsPPM) );
+  const combined = rankLogic( weightedCombine(cor, ppm) );
+
+  buildSection(elCorrective, "Corrective", cor);
+  buildSection(elPPM, "PPM", ppm);
+  buildSection(elCombined, "Combined", combined);
+});
 </script>
 </body>
 </html>
