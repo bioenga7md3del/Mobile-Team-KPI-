@@ -9,80 +9,112 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{
-  --bg:#ffffff;--text:#1f2937;--muted:#6b7280;--card:#f9fafb;--border:#e5e7eb;
-  --btn:#f3f4f6;--btn-border:#d1d5db;--gold:#f59e0b;--gold-dark:#b45309;
-  --green:#10b981;--red:#ef4444;--blue:#60a5fa;
+  --bg:#f7f7fb; --panel:#ffffff; --muted:#6b7280; --text:#1f2937; --border:#e5e7eb;
+  --ring:#d1d5db; --shadow:0 10px 30px rgba(0,0,0,.05);
+  --gold:#ffedd5; --gold-border:#fbbf24; --gold-text:#b45309;
+  --green:#10b981; --red:#ef4444; --blue:#2563eb; --subtle:#f3f4f6;
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif}
-.container{max-width:1280px;margin:28px auto;padding:0 16px}
-header.brand{display:grid;grid-template-columns:180px 1fr 280px;gap:16px;align-items:center}
-.logo{background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px;display:flex;justify-content:center;align-items:center;min-height:100px}
-.logo img{max-width:160px;height:auto}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+.container{max-width:1200px;margin:22px auto;padding:0 12px}
+
+/* header (مطابق للصورة 1) */
+.header{display:grid;grid-template-columns:160px 1fr 260px;gap:12px;align-items:center}
+.brand-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px;display:flex;justify-content:center;align-items:center;min-height:88px;box-shadow:var(--shadow)}
+.brand-box img{max-width:140px;height:auto}
 .title{text-align:center}
-.title h1{margin:4px 0;font-size:28px;font-weight:800}
-.title p{margin:2px 0;color:var(--muted);font-size:14px}
-.controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.file{border:1px dashed var(--border);background:#fff;border-radius:10px;padding:6px 8px}
-.btn{padding:10px 14px;border:1px solid var(--btn-border);background:var(--btn);border-radius:999px;cursor:pointer}
-.tabs{display:flex;gap:8px;margin:18px 0;flex-wrap:wrap}
-.tab{padding:10px 16px;border:1px solid var(--btn-border);background:var(--btn);border-radius:999px;cursor:pointer}
-.tab.active{border-color:#9ca3af;box-shadow:0 0 0 2px rgba(0,0,0,.04) inset}
-.view{display:none}
-.view.active{display:block}
-.grid{display:grid;grid-template-columns:1fr;gap:18px}
-@media(min-width:1000px){.grid{grid-template-columns:1fr 1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
+.title h1{margin:6px 0 0 0;font-size:22px;font-weight:800}
+.title h1 span{display:block;font-size:18px;margin-top:4px}
+.title p{margin:2px 0;color:var(--muted);font-size:12px}
+.controls{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:var(--shadow)}
+.controls .row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.controls label{font-size:12px;color:#111827;min-width:110px}
+.controls input[type=file]{font-size:12px}
+.controls .btns{display:flex;gap:6px;justify-content:flex-end}
+.btn{padding:8px 12px;border:1px solid var(--ring);background:var(--panel);border-radius:999px;cursor:pointer;font-size:12px}
+.btn.primary{background:#111827;color:#fff;border-color:#111827}
+.btn:hover{filter:brightness(.97)}
+
+/* winners pill */
+.winners{background:var(--panel);border:1px solid var(--gold-border);border-radius:12px;padding:10px 12px;margin:14px 0;box-shadow:var(--shadow)}
+.winners .chip{display:inline-flex;gap:8px;align-items:center;background:var(--gold);padding:8px 12px;border:1px solid var(--gold-border);border-radius:10px;color:var(--gold-text);font-weight:800}
+
+/* tabs */
+.tabs{display:flex;gap:8px;margin:8px 0 10px 0}
+.tab{padding:8px 14px;border:1px solid var(--ring);background:var(--panel);border-radius:999px;cursor:pointer;font-size:12px}
+.tab.active{background:var(--subtle)}
+
+/* sections/cards */
+.section{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin:10px 0;box-shadow:var(--shadow)}
+.section .hd{padding:10px 12px;border-bottom:1px solid var(--border);font-weight:700}
+.section .bd{padding:12px}
+
+.grid2{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:1000px){.grid2{grid-template-columns:1fr 1fr}}
+
+.chart{width:100%;height:300px;border:1px solid var(--border);border-radius:10px;background:#fff}
 .kpigrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px}
 .kpi span{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}
 .kpi b{font-size:18px}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;margin-left:8px}
-.badge.green{background:rgba(16,185,129,.12);color:#065f46;border:1px solid rgba(16,185,129,.4)}
-.badge.red{background:rgba(239,68,68,.12);color:#7f1d1d;border:1px solid rgba(239,68,68,.4)}
-.chart{width:100%;height:330px;border:1px solid var(--border);border-radius:10px;background:#fff}
-table{width:100%;border-collapse:collapse;border:1px solid var(--border);background:#fff;border-radius:12px;overflow:hidden}
-thead th{background:#f3f4f6;color:#111827;text-align:left;font-weight:700;font-size:14px;padding:10px;border-bottom:1px solid var(--border)}
-tbody td{padding:10px;border-bottom:1px solid var(--border);color:#1f2937;font-size:14px}
-details.site{background:#fff;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}
-details.site>summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:800;color:#111827}
-details.site>summary::-webkit-details-marker{display:none}
-.site-body{padding:0 14px 14px}
-.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
-.kv div{background:#f9fafb;padding:10px;border-radius:10px;border:1px solid var(--border)}
-.kv span{color:var(--muted);font-size:12px;display:block}
-footer{color:var(--muted);font-size:12px;margin:16px 0}
+.badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:700;margin-left:6px}
+.badge.red{background:rgba(239,68,68,.12);color:#7f1d1d;border:1px solid rgba(239,68,68,.35)}
+.badge.green{background:rgba(16,185,129,.12);color:#065f46;border:1px solid rgba(16,185,129,.35)}
 
-/* --- Golden Winners Card (like September page) --- */
-.winners{background:linear-gradient(135deg,#fff7ed,#fffbeb);border:1px solid #fde68a;border-radius:16px;padding:16px}
-.winners h3{margin:0 0 8px 0;color:var(--gold-dark)}
-.medal{display:inline-block;background:var(--gold);color:#fff;border-radius:999px;padding:4px 10px;font-weight:800;margin-right:8px}
+table{width:100%;border-collapse:collapse;border:1px solid var(--border);background:#fff;border-radius:10px;overflow:hidden}
+thead th{background:var(--subtle);text-align:left;padding:10px;font-size:13px;border-bottom:1px solid var(--border)}
+tbody td{padding:10px;border-bottom:1px solid var(--border);font-size:13px}
+
+/* collapsible sites */
+details.site{background:#fff;border:1px solid var(--border);border-radius:10px;margin-bottom:8px}
+details.site>summary{cursor:pointer;list-style:none;padding:10px 12px;font-weight:800}
+details.site>summary::-webkit-details-marker{display:none}
+.site-body{padding:0 12px 12px}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kv div{background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:8px}
+.kv span{color:var(--muted);font-size:12px}
+
+footer{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;margin:10px 0}
+footer img{height:26px;border-radius:6px;border:1px solid var(--border)}
+.view{display:none}.view.active{display:block}
+
+/* small helpers */
+.hidden{display:none}
 </style>
 </head>
 <body>
 <div class="container">
 
-  <header class="brand">
-    <div class="logo"><img src="./TabukCluster.jpeg" alt="Tabuk Cluster" onerror="this.style.display='none'"/></div>
+  <!-- Header -->
+  <div class="header">
+    <div class="brand-box">
+      <img src="./TabukCluster.jpeg" alt="Tabuk Health Cluster" onerror="this.style.display='none'"/>
+    </div>
     <div class="title">
-      <h1>Mobile Team Monthly Maintenance KPIs – October 2025</h1>
+      <h1>Mobile Team Monthly Maintenance KPIs – <span>October 2025</span></h1>
       <p>Corrective & Preventive Maintenance • Tabuk Health Cluster</p>
       <p>Prepared by: قسم الصيانة الطبية بتجمع تبوك الصحي</p>
     </div>
     <div class="controls">
-      <label class="file">Corrective Wo.xlsx <input type="file" id="file-cm" accept=".xlsx,.xls"/></label>
-      <label class="file">Preventive ppm.xlsx <input type="file" id="file-pm" accept=".xlsx,.xls"/></label>
-      <button class="btn" id="btn-run">Load & Calculate</button>
-      <button class="btn" id="btn-lang">EN / AR</button>
+      <div class="row">
+        <label>Corrective Wo.xlsx</label><input type="file" id="file-cm" accept=".xlsx,.xls"/>
+      </div>
+      <div class="row">
+        <label>Preventive ppm.xlsx</label><input type="file" id="file-pm" accept=".xlsx,.xls"/>
+      </div>
+      <div class="btns">
+        <button class="btn primary" id="btn-run">Load & Calculate</button>
+        <button class="btn" id="btn-lang">EN / AR</button>
+      </div>
     </div>
-  </header>
+  </div>
 
-  <!-- Golden Winners Card -->
-  <section class="winners" id="winners">
-    <h3><span class="medal">🏆</span> October 2025 Winners</h3>
-    <div id="winners-list" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-  </section>
+  <!-- Winners pill -->
+  <div class="winners">
+    <span class="chip">🏆 October 2025 Winners</span>
+    <span id="winners-list" style="margin-left:8px;color:var(--gold-text);font-weight:700"></span>
+  </div>
 
+  <!-- Tabs -->
   <div class="tabs">
     <button class="tab active" id="tab-cm">Corrective</button>
     <button class="tab" id="tab-pm">Preventive</button>
@@ -91,137 +123,146 @@ footer{color:var(--muted);font-size:12px;margin:16px 0}
 
   <!-- Corrective -->
   <div class="view active" id="cm">
-    <section class="card">
-      <h3>Summary</h3>
-      <div class="kpigrid" id="cm-kpis"></div>
-    </section>
-    <div class="grid">
-      <section class="card">
-        <h3>Total Work Orders by Site</h3>
-        <svg id="cm-total" class="chart"></svg>
-      </section>
-      <section class="card">
-        <h3>Open vs Closed</h3>
-        <svg id="cm-pie" class="chart"></svg>
-      </section>
+    <div class="section">
+      <div class="hd">Summary</div>
+      <div class="bd"><div class="kpigrid" id="cm-kpis"></div></div>
     </div>
-    <div class="grid">
-      <section class="card">
-        <h3>Avg. Repair Days by Site</h3>
-        <svg id="cm-repair" class="chart"></svg>
-      </section>
-      <section class="card">
-        <h3>Top 10 Devices (ECRI)</h3>
-        <svg id="cm-dev" class="chart"></svg>
-      </section>
+
+    <div class="grid2">
+      <div class="section">
+        <div class="hd">Total Work Orders by Site</div>
+        <div class="bd"><svg id="cm-total" class="chart"></svg></div>
+      </div>
+      <div class="section">
+        <div class="hd">Open vs Closed</div>
+        <div class="bd"><svg id="cm-pie" class="chart"></svg></div>
+      </div>
     </div>
-    <section class="card">
-      <h3>Corrective – Ranking (Top 12)</h3>
-      <div style="overflow:auto"><table id="cm-rank"></table></div>
-    </section>
-    <section class="card">
-      <h3>Sites – Details & Recommendations</h3>
-      <div id="cm-sites"></div>
-    </section>
+
+    <div class="grid2">
+      <div class="section">
+        <div class="hd">Avg. Repair Days by Site</div>
+        <div class="bd"><svg id="cm-repair" class="chart"></svg></div>
+      </div>
+      <div class="section">
+        <div class="hd">Top 10 Devices (ECRI)</div>
+        <div class="bd"><svg id="cm-dev" class="chart"></svg></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="hd">Corrective – Ranking (Top 12)</div>
+      <div class="bd"><div style="overflow:auto"><table id="cm-rank"></table></div></div>
+    </div>
+
+    <div class="section">
+      <div class="hd">Sites – Details & Recommendations</div>
+      <div class="bd" id="cm-sites"></div>
+    </div>
   </div>
 
   <!-- Preventive -->
   <div class="view" id="pm">
-    <section class="card">
-      <h3>Summary</h3>
-      <div class="kpigrid" id="pm-kpis"></div>
-    </section>
-    <div class="grid">
-      <section class="card">
-        <h3>Total Work Orders by Site</h3>
-        <svg id="pm-total" class="chart"></svg>
-      </section>
-      <section class="card">
-        <h3>Open vs Closed</h3>
-        <svg id="pm-pie" class="chart"></svg>
-      </section>
+    <div class="section">
+      <div class="hd">Summary</div>
+      <div class="bd"><div class="kpigrid" id="pm-kpis"></div></div>
     </div>
-    <div class="grid">
-      <section class="card">
-        <h3>Avg. Repair Days by Site</h3>
-        <svg id="pm-repair" class="chart"></svg>
-      </section>
+
+    <div class="grid2">
+      <div class="section">
+        <div class="hd">Total Work Orders by Site</div>
+        <div class="bd"><svg id="pm-total" class="chart"></svg></div>
+      </div>
+      <div class="section">
+        <div class="hd">Open vs Closed</div>
+        <div class="bd"><svg id="pm-pie" class="chart"></svg></div>
+      </div>
     </div>
-    <section class="card">
-      <h3>Preventive – Ranking (Top 12)</h3>
-      <div style="overflow:auto"><table id="pm-rank"></table></div>
-    </section>
-    <section class="card">
-      <h3>Sites – Details & Recommendations</h3>
-      <div id="pm-sites"></div>
-    </section>
+
+    <div class="grid2">
+      <div class="section">
+        <div class="hd">Avg. Repair Days by Site</div>
+        <div class="bd"><svg id="pm-repair" class="chart"></svg></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="hd">Preventive – Ranking (Top 12)</div>
+      <div class="bd"><div style="overflow:auto"><table id="pm-rank"></table></div></div>
+    </div>
+
+    <div class="section">
+      <div class="hd">Sites – Details & Recommendations</div>
+      <div class="bd" id="pm-sites"></div>
+    </div>
   </div>
 
   <!-- Combined -->
   <div class="view" id="co">
-    <section class="card">
-      <h3>Summary</h3>
-      <div class="kpigrid" id="co-kpis"></div>
-    </section>
-    <div class="grid">
-      <section class="card">
-        <h3>Total Work Orders by Site</h3>
-        <svg id="co-total" class="chart"></svg>
-      </section>
-      <section class="card">
-        <h3>Open vs Closed</h3>
-        <svg id="co-pie" class="chart"></svg>
-      </section>
+    <div class="section">
+      <div class="hd">Summary</div>
+      <div class="bd"><div class="kpigrid" id="co-kpis"></div></div>
     </div>
-    <div class="grid">
-      <section class="card">
-        <h3>Avg. Repair Days by Site</h3>
-        <svg id="co-repair" class="chart"></svg>
-      </section>
+
+    <div class="grid2">
+      <div class="section">
+        <div class="hd">Total Work Orders by Site</div>
+        <div class="bd"><svg id="co-total" class="chart"></svg></div>
+      </div>
+      <div class="section">
+        <div class="hd">Open vs Closed</div>
+        <div class="bd"><svg id="co-pie" class="chart"></svg></div>
+      </div>
     </div>
-    <section class="card">
-      <h3>Combined – Ranking (Top 12)</h3>
-      <div style="overflow:auto"><table id="co-rank"></table></div>
-    </section>
-    <section class="card">
-      <h3>Sites – Details & Recommendations</h3>
-      <div id="co-sites"></div>
-    </section>
+
+    <div class="grid2">
+      <div class="section">
+        <div class="hd">Avg. Repair Days by Site</div>
+        <div class="bd"><svg id="co-repair" class="chart"></svg></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="hd">Combined – Ranking (Top 12)</div>
+      <div class="bd"><div style="overflow:auto"><table id="co-rank"></table></div></div>
+    </div>
+
+    <div class="section">
+      <div class="hd">Sites – Details & Recommendations</div>
+      <div class="bd" id="co-sites"></div>
+    </div>
   </div>
 
   <footer>
-    <div style="display:flex;gap:10px;align-items:center">
-      <img src="./FGC.jpeg" alt="FGC" style="height:34px;border-radius:8px;border:1px solid var(--border)" onerror="this.style.display='none'"/>
-      <span id="gentime" style="color:var(--muted)"></span>
-    </div>
+    <img src="./FGC.jpeg" alt="FGC" onerror="this.style.display='none'"/>
+    <span id="gentime"></span>
   </footer>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
+/* نفس أسماء الأعمدة التي عندك */
 const COL={site:'Site',resp:'Response KPI',rep:'Repierd KPI',ecri:'ECRI Code'};
 
-const Tabs=[
-  {btn:'tab-cm',view:'cm'},
-  {btn:'tab-pm',view:'pm'},
-  {btn:'tab-co',view:'co'},
-];
-Tabs.forEach(t=>{
-  document.getElementById(t.btn).addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    document.getElementById(t.btn).classList.add('active');
-    document.getElementById(t.view).classList.add('active');
+/* تبويب */
+[['tab-cm','cm'],['tab-pm','pm'],['tab-co','co']].forEach(([b,v])=>{
+  document.getElementById(b).addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    document.getElementById(b).classList.add('active');
+    document.getElementById(v).classList.add('active');
   });
 });
+
+/* لغة */
 document.getElementById('btn-lang').addEventListener('click',()=>{
   const html=document.documentElement;
   if(html.getAttribute('dir')==='rtl'){ html.removeAttribute('dir'); html.setAttribute('lang','en'); }
   else{ html.setAttribute('dir','rtl'); html.setAttribute('lang','ar'); }
 });
 
-function readExcel(file){
+/* قراءة الإكسل (أكبر شيت) */
+function readExcel(f){
   return new Promise((res,rej)=>{
     const r=new FileReader();
     r.onload=e=>{
@@ -231,105 +272,96 @@ function readExcel(file){
         const lb=XLSX.utils.sheet_to_json(wb.Sheets[b],{defval:null}).length;
         return lb>la?b:a;
       });
-      const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:null});
-      res(rows);
+      res(XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:null}));
     };
-    r.onerror=rej;
-    r.readAsArrayBuffer(file);
+    r.onerror=rej; r.readAsArrayBuffer(f);
   });
 }
 
 document.getElementById('btn-run').addEventListener('click',async()=>{
   const fcm=document.getElementById('file-cm').files[0];
   const fpm=document.getElementById('file-pm').files[0];
-  if(!fcm||!fpm){ alert('Please select both Wo.xlsx and ppm.xlsx'); return; }
+  if(!fcm||!fpm){ alert('Please select Wo.xlsx and ppm.xlsx'); return; }
   const CM=await readExcel(fcm);
   const PM=await readExcel(fpm);
   renderAll(CM,PM);
   document.getElementById('gentime').textContent='Generated '+new Date().toLocaleString();
 });
 
-/* ---- helpers ---- */
-const isNullish=v=>{
-  if(v===null||v===undefined) return true;
-  const s=String(v).trim().toLowerCase();
-  return s===''||s==='null'||s==='nan'||s==='none';
-};
-const num=v=>{
-  if(isNullish(v)) return NaN;
-  const n=Number(String(v).replaceAll(',',''));
-  return isFinite(n)?n:NaN;
-};
+/* Helpers */
+const isNullish=v=>v===null||v===undefined||String(v).trim().toLowerCase()===''||String(v).trim().toLowerCase()==='null';
+const toNum=v=>isNullish(v)?NaN:Number(String(v).replaceAll(',',''));
 const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
 
 function groupCorrective(rows){
   const map=new Map(), devices=new Map();
   rows.forEach(r=>{
     const site=(r[COL.site]??'(blank)').toString().trim();
-    const resp=num(r[COL.resp]);
-    const rep=num(r[COL.rep]);
-    const open=isNullish(r[COL.rep]); // OPEN if Repierd KPI blank
+    const resp=toNum(r[COL.resp]), rep=toNum(r[COL.rep]);
+    const open=isNullish(r[COL.rep]);                 // مفتوح لو Repierd KPI فاضي
     if(!map.has(site)) map.set(site,{site,total:0,open:0,resp:[],rep:[]});
-    const s=map.get(site);
-    s.total++; if(open) s.open++;
+    const s=map.get(site); s.total++; if(open) s.open++;
     if(!Number.isNaN(resp)) s.resp.push(resp);
     if(!Number.isNaN(rep)) s.rep.push(rep);
     const d=(r[COL.ecri]??'(blank)').toString().trim();
     devices.set(d,(devices.get(d)||0)+1);
   });
-  const bySite=[...map.values()].map(s=>({
-    site:s.site,
-    total_wo:s.total,
-    open_wo:s.open,
-    closed_wo:s.total-s.open,
+  const arr=[...map.values()].map(s=>({
+    site:s.site,total_wo:s.total,open_wo:s.open,closed_wo:s.total-s.open,
     avg_response_days:s.resp.length?avg(s.resp):null,
     avg_repair_days:s.rep.length?avg(s.rep):null,
     open_rate_pct:s.total?(s.open/s.total*100):null
   }));
-  const topDev=[...devices.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10)
-    .map(([device,count])=>({device,count}));
-  return {bySite, topDev};
+  const top=[...devices.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(([device,count])=>({device,count}));
+  return {arr,top};
 }
+
 function groupPreventive(rows){
   const map=new Map();
   rows.forEach(r=>{
     const site=(r[COL.site]??'(blank)').toString().trim();
-    const resp=num(r[COL.resp]);
-    const rep=num(r[COL.rep]);
-    const respNull=isNullish(r[COL.resp]);
-    const repNull =isNullish(r[COL.rep]);
-    const isClosed=Number.isFinite(rep)&&rep>=0;
-    const isOpen  =repNull||respNull;              // OPEN includes NOT OPENED
-    const notOpened=respNull;
+    const resp=toNum(r[COL.resp]), rep=toNum(r[COL.rep]);
+    const respBlank=isNullish(r[COL.resp]), repBlank=isNullish(r[COL.rep]);
+    const isClosed=Number.isFinite(rep)&&rep>=0;     // مغلق لو Repierd KPI رقم >= 0
+    const isOpen=repBlank||respBlank;                // مفتوح لو أيّ منهما فاضي
+    const notOpened=respBlank;
     if(!map.has(site)) map.set(site,{site,total:0,open:0,closed:0,notOpened:0,resp:[],rep:[]});
     const s=map.get(site);
     s.total++; if(isOpen) s.open++; if(notOpened) s.notOpened++;
     if(isClosed) s.closed++; else s.closed=s.total-s.open;
-    if(!Number.isNaN(resp)) s.resp.push(resp);
-    if(!Number.isNaN(rep)) s.rep.push(rep);
+    if(!Number.isNaN(resp)) s.resp.push(resp); if(!Number.isNaN(rep)) s.rep.push(rep);
   });
-  const bySite=[...map.values()].map(s=>({
+  const arr=[...map.values()].map(s=>({
     site:s.site,total_wo:s.total,open_wo:s.open,closed_wo:s.closed,not_opened:s.notOpened,
     avg_response_days:s.resp.length?avg(s.resp):null,
     avg_repair_days:s.rep.length?avg(s.rep):null,
     open_rate_pct:s.total?(s.open/s.total*100):null
   }));
-  return {bySite};
+  return {arr};
 }
-function sumMeta(arr, withNot=false){
-  const t=arr.reduce((a,b)=>a+b.total_wo,0);
-  const o=arr.reduce((a,b)=>a+b.open_wo,0);
-  const c=arr.reduce((a,b)=>a+b.closed_wo,0);
-  const or=t?(o/t*100):0;
-  const resp=arr.map(x=>x.avg_response_days).filter(Number.isFinite);
-  const rep =arr.map(x=>x.avg_repair_days).filter(Number.isFinite);
+
+function combine(cm,pm){
+  const map=new Map();
+  function add(a){ a.forEach(r=>{ if(!map.has(r.site)) map.set(r.site,{site:r.site,total:0,open:0,closed:0,resps:[],reps:[]});
+    const m=map.get(r.site); m.total+=r.total_wo; m.open+=r.open_wo; m.closed+=r.closed_wo;
+    if(Number.isFinite(r.avg_response_days)) m.resps.push(r.avg_response_days);
+    if(Number.isFinite(r.avg_repair_days)) m.reps.push(r.avg_repair_days);
+  });}
+  add(cm); add(pm);
+  return [...map.values()].map(m=>({
+    site:m.site,total_wo:m.total,open_wo:m.open,closed_wo:m.closed,
+    avg_response_days:m.resps.length?avg(m.resps):null,
+    avg_repair_days:m.reps.length?avg(m.reps):null,
+    open_rate_pct:m.total?(m.open/m.total*100):null
+  }));
+}
+function meta(arr,withNot=false){
+  const t=arr.reduce((a,b)=>a+b.total_wo,0), o=arr.reduce((a,b)=>a+b.open_wo,0), c=arr.reduce((a,b)=>a+b.closed_wo,0);
+  const or=t?(o/t*100):0, resp=arr.map(x=>x.avg_response_days).filter(Number.isFinite), rep=arr.map(x=>x.avg_repair_days).filter(Number.isFinite);
   const notO=withNot?arr.reduce((a,b)=>a+(b.not_opened||0),0):null;
-  return {total_wo:t,open_wo:o,closed_wo:c,open_rate_pct:or,
-          avg_response_days:resp.length?avg(resp):null,
-          avg_repair_days:rep.length?avg(rep):null,
-          not_opened:notO};
+  return {total_wo:t,open_wo:o,closed_wo:c,open_rate_pct:or,avg_response_days:resp.length?avg(resp):null,avg_repair_days:rep.length?avg(rep):null,not_opened:notO};
 }
-function rankRows(rows){
+function rank(rows){
   return rows.slice().sort((a,b)=>{
     const k1=(a.open_rate_pct??1e9)-(b.open_rate_pct??1e9);
     const k2=(a.avg_repair_days??1e9)-(b.avg_repair_days??1e9);
@@ -338,79 +370,65 @@ function rankRows(rows){
     return k1||k2||k3||k4;
   });
 }
-function renderKPIs(el,m,extra){
-  el.innerHTML = `
-    <div class="kpi"><span>Total Work Orders</span><b>${m.total_wo.toLocaleString()}</b></div>
-    <div class="kpi"><span>Open Work Orders</span><b>${m.open_wo.toLocaleString()} <i class="badge red">Open</i></b></div>
-    <div class="kpi"><span>Closed Work Orders</span><b>${m.closed_wo.toLocaleString()} <i class="badge green">Closed</i></b></div>
-    <div class="kpi"><span>Open Rate</span><b>${m.open_rate_pct.toFixed(1)}%</b></div>
-    <div class="kpi"><span>Avg. Response (days)</span><b>${m.avg_response_days!=null?m.avg_response_days.toFixed(2):'—'}</b></div>
-    <div class="kpi"><span>Avg. Repair (days)</span><b>${m.avg_repair_days!=null?m.avg_repair_days.toFixed(2):'—'}</b></div>
-    ${extra&&m.not_opened!=null?`<div class="kpi"><span>Not Opened (Response KPI blank)</span><b>${m.not_opened.toLocaleString()}</b></div>`:''}
-  `;
-}
 
-/* --- SVG charts (simple + clean) --- */
 function drawBar(svg,items,xKey,yKey){
-  const w=svg.clientWidth,h=svg.clientHeight,p=40; svg.innerHTML='';
-  const max=Math.max(1,...items.map(d=>+d[yKey]||0));
-  const bw=(w-p*2)/(items.length||1);
+  const w=svg.clientWidth,h=svg.clientHeight,p=36; svg.innerHTML='';
+  const max=Math.max(1,...items.map(d=>+d[yKey]||0)), bw=(w-p*2)/Math.max(1,items.length);
   const axis=document.createElementNS('http://www.w3.org/2000/svg','line');
   axis.setAttribute('x1',p);axis.setAttribute('y1',h-p);axis.setAttribute('x2',w-p);axis.setAttribute('y2',h-p);
-  axis.setAttribute('stroke','#9ca3af');svg.appendChild(axis);
+  axis.setAttribute('stroke','#cbd5e1');svg.appendChild(axis);
   items.forEach((d,i)=>{
-    const x=p+i*bw+5, y=h-p-((d[yKey]||0)/max*(h-p*2));
+    const x=p+i*bw+4, y=h-p-((d[yKey]||0)/max*(h-p*2));
     const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
-    r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',Math.max(2,bw-10));r.setAttribute('height',(h-p)-y);r.setAttribute('fill','var(--blue)');
-    svg.appendChild(r);
+    r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',Math.max(2,bw-8));
+    r.setAttribute('height',(h-p)-y);r.setAttribute('fill','#f59e0b');svg.appendChild(r);
     const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x',x+(bw-10)/2);t.setAttribute('y',h-10);t.setAttribute('font-size','10');t.setAttribute('text-anchor','middle');
+    t.setAttribute('x',x+(bw-8)/2);t.setAttribute('y',h-10);t.setAttribute('font-size','10');t.setAttribute('text-anchor','middle');
     t.textContent=String(d[xKey]).slice(0,12); svg.appendChild(t);
   });
 }
 function drawPie(svg,openCount,closedCount){
   const w=svg.clientWidth,h=svg.clientHeight; svg.innerHTML='';
-  const r=Math.min(w,h)/2-10, cx=w/2, cy=h/2; const tot=Math.max(1,openCount+closedCount);
-  const parts=[{v:openCount,col:'var(--red)'},{v:closedCount,col:'var(--green)'}];
+  const r=Math.min(w,h)/2-10,cx=w/2,cy=h/2,tot=Math.max(1,openCount+closedCount);
+  const parts=[{v:openCount,col:'var(--red)',label:'Under Repair'},{v:closedCount,col:'var(--green)',label:'Finished'}];
   let a0=-Math.PI/2;
   parts.forEach(p=>{
-    const ang=p.v/tot*Math.PI*2, a1=a0+ang;
-    const x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
+    const ang=p.v/tot*Math.PI*2,a1=a0+ang,x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0),x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
     const big=ang>Math.PI?1:0, path=document.createElementNS('http://www.w3.org/2000/svg','path');
     path.setAttribute('d',`M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 ${big} 1 ${x1} ${y1} Z`); path.setAttribute('fill',p.col); svg.appendChild(path); a0=a1;
   });
   const t=document.createElementNS('http://www.w3.org/2000/svg','text');
   t.setAttribute('x',w/2);t.setAttribute('y',h-8);t.setAttribute('text-anchor','middle');t.setAttribute('font-size','12');
-  t.textContent=`Open ${(openCount/tot*100).toFixed(1)}%`; svg.appendChild(t);
+  t.textContent=`Under Repair ${(openCount/tot*100).toFixed(1)}%`; svg.appendChild(t);
 }
 function renderRank(table,rows){
-  const s=rankRows(rows); const head=['#','site','total_wo','open_wo','closed_wo','open_rate_pct','avg_response_days','avg_repair_days'];
+  const s=rank(rows), head=['#','site','total_wo','open_wo','closed_wo','open_rate_pct','avg_response_days','avg_repair_days'];
   table.innerHTML=`<thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody></tbody>`;
   const tb=table.querySelector('tbody');
   s.slice(0,12).forEach((r,i)=>{
     const tr=document.createElement('tr');
-    const vals=[i+1,r.site,r.total_wo,r.open_wo,r.closed_wo,
-      r.open_rate_pct!=null?r.open_rate_pct.toFixed(1)+'%':'—',
-      r.avg_response_days!=null?r.avg_response_days.toFixed(2):'—',
-      r.avg_repair_days!=null?r.avg_repair_days.toFixed(2):'—'];
-    vals.forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});
+    [i+1,r.site,r.total_wo,r.open_wo,r.closed_wo,
+     r.open_rate_pct!=null?r.open_rate_pct.toFixed(1)+'%':'—',
+     r.avg_response_days!=null?r.avg_response_days.toFixed(2):'—',
+     r.avg_repair_days!=null?r.avg_repair_days.toFixed(2):'—'
+    ].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});
     tb.appendChild(tr);
   });
 }
-function siteReco(r){
-  const rec=[]; if((r.open_rate_pct||0)>30) rec.push('Reduce backlog: daily aging report & escalation.');
-  if((r.avg_repair_days||0)>5) rec.push('Improve parts readiness & vendor SLA.');
-  if((r.avg_response_days||0)>2) rec.push('Speed up triage/dispatch within 2 hours.');
-  if(!rec.length) rec.push('Good performance. Maintain weekly monitoring.');
-  return rec;
+function recos(r){
+  const out=[]; if((r.open_rate_pct||0)>30) out.push('Reduce backlog with daily aging & escalation >7d');
+  if((r.avg_repair_days||0)>5) out.push('Improve parts readiness & vendor SLA');
+  if((r.avg_response_days||0)>2) out.push('Faster triage/dispatch within 2 hours');
+  if(!out.length) out.push('Good performance – keep weekly monitoring');
+  return out;
 }
 function renderSites(el,rows){
   el.innerHTML='';
   rows.forEach(r=>{
-    const d=document.createElement('details');d.className='site';
-    const s=document.createElement('summary');s.textContent=r.site;
-    const body=document.createElement('div');body.className='site-body';
-    const kv=document.createElement('div');kv.className='kv';
+    const det=document.createElement('details'); det.className='site';
+    const sum=document.createElement('summary'); sum.textContent=r.site;
+    const body=document.createElement('div'); body.className='site-body';
+    const kv=document.createElement('div'); kv.className='kv';
     kv.innerHTML=`
       <div><span>Total WOs</span><b>${r.total_wo}</b></div>
       <div><span>Open WOs</span><b>${r.open_wo} <i class="badge red">Open</i></b></div>
@@ -418,108 +436,60 @@ function renderSites(el,rows){
       <div><span>Open %</span><b>${r.open_rate_pct!=null?r.open_rate_pct.toFixed(1)+'%':'—'}</b></div>
       <div><span>Avg. Response (days)</span><b>${r.avg_response_days!=null?r.avg_response_days.toFixed(2):'—'}</b></div>
       <div><span>Avg. Repair (days)</span><b>${r.avg_repair_days!=null?r.avg_repair_days.toFixed(2):'—'}</b></div>`;
-    const recs=siteReco(r).map(x=>`<li>${x}</li>`).join('');
-    body.innerHTML=kv.outerHTML+`<div><b>Recommendations</b><ul>${recs}</ul></div>`;
-    d.appendChild(s);d.appendChild(body);el.appendChild(d);
+    body.innerHTML = kv.outerHTML + `<div style="margin-top:8px"><b>Recommendations</b><ul>${recos(r).map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+    det.appendChild(sum); det.appendChild(body); el.appendChild(det);
   });
 }
 
-/* ---- Winners (Top 3 best sites by ranking) ---- */
-function renderWinners(rows){
-  const top=rankRows(rows).slice(0,3);
-  const hold=document.getElementById('winners-list'); hold.innerHTML='';
-  top.forEach((r,i)=>{
-    const chip=document.createElement('div');
-    chip.style.cssText='background:#fff;border:1px solid #fde68a;border-radius:999px;padding:6px 12px;font-weight:700';
-    chip.textContent=`${i+1}) ${r.site} • Open ${r.open_rate_pct?.toFixed(1)||'-'}%`;
-    hold.appendChild(chip);
-  });
+/* Winners (Top 3 by combined ranking) */
+function winners(rows){
+  const top=rank(rows).slice(0,3);
+  document.getElementById('winners-list').textContent = top.map((r,i)=>`${i+1}) ${r.site}`).join('  •  ');
 }
 
-/* ---- Combined ---- */
-function combine(cm,pm){
-  const map=new Map();
-  function add(a){
-    a.forEach(r=>{
-      if(!map.has(r.site)) map.set(r.site,{site:r.site,total_wo:0,open_wo:0,closed_wo:0,resps:[],reps:[]});
-      const m=map.get(r.site);
-      m.total_wo+=r.total_wo; m.open_wo+=r.open_wo; m.closed_wo+=r.closed_wo;
-      if(Number.isFinite(r.avg_response_days)) m.resps.push(r.avg_response_days);
-      if(Number.isFinite(r.avg_repair_days)) m.reps.push(r.avg_repair_days);
-    });
-  }
-  add(cm); add(pm);
-  return [...map.values()].map(m=>({
-    site:m.site,total_wo:m.total_wo,open_wo:m.open_wo,closed_wo:m.closed_wo,
-    avg_response_days:m.resps.length?avg(m.resps):null,
-    avg_repair_days:m.reps.length?avg(m.reps):null,
-    open_rate_pct:m.total_wo?(m.open_wo/m.total_wo*100):null
-  }));
-}
-
-/* ---- Main render ---- */
+/* Render all */
 function renderAll(CMrows,PMrows){
-  const {bySite:cmBySite,topDev}=groupCorrective(CMrows);
-  const {bySite:pmBySite}=groupPreventive(PMrows);
-  const coBySite=combine(cmBySite,pmBySite);
+  const c=groupCorrective(CMrows), p=groupPreventive(PMrows);
+  const co=combine(c.arr,p.arr);
 
-  // winners (من ملفات أكتوبر الجديدة)
-  renderWinners(coBySite);
+  // KPIs
+  const cmM=meta(c.arr,false), pmM=meta(p.arr,true), coM=meta(co,false);
+  renderKPIs('cm-kpis',cmM,false); renderKPIs('pm-kpis',pmM,true); renderKPIs('co-kpis',coM,false);
 
-  const cmMeta=sumMeta(cmBySite,false);
-  const pmMeta=sumMeta(pmBySite,true);
-  const coMeta=sumMeta(coBySite,false);
+  // Charts
+  drawBar(document.getElementById('cm-total'),c.arr,'site','total_wo');
+  drawPie(document.getElementById('cm-pie'),cmM.open_wo,cmM.closed_wo);
+  drawBar(document.getElementById('cm-repair'),c.arr,'site','avg_repair_days');
+  drawBar(document.getElementById('pm-total'),p.arr,'site','total_wo');
+  drawPie(document.getElementById('pm-pie'),pmM.open_wo,pmM.closed_wo);
+  drawBar(document.getElementById('pm-repair'),p.arr,'site','avg_repair_days');
+  drawBar(document.getElementById('co-total'),co,'site','total_wo');
+  drawPie(document.getElementById('co-pie'),coM.open_wo,coM.closed_wo);
+  drawBar(document.getElementById('co-repair'),co,'site','avg_repair_days');
 
-  renderKPIs(document.getElementById('cm-kpis'),cmMeta,false);
-  renderKPIs(document.getElementById('pm-kpis'),pmMeta,true);
-  renderKPIs(document.getElementById('co-kpis'),coMeta,false);
+  // Tables & details
+  renderRank(document.getElementById('cm-rank'),c.arr);
+  renderRank(document.getElementById('pm-rank'),p.arr);
+  renderRank(document.getElementById('co-rank'),co);
+  renderSites(document.getElementById('cm-sites'),c.arr);
+  renderSites(document.getElementById('pm-sites'),p.arr);
+  renderSites(document.getElementById('co-sites'),co);
 
-  drawBar(document.getElementById('cm-total'),cmBySite,'site','total_wo');
-  drawPie(document.getElementById('cm-pie'),cmMeta.open_wo,cmMeta.closed_wo);
-  drawBar(document.getElementById('cm-repair'),cmBySite,'site','avg_repair_days');
-
-  drawBar(document.getElementById('pm-total'),pmBySite,'site','total_wo');
-  drawPie(document.getElementById('pm-pie'),pmMeta.open_wo,pmMeta.closed_wo);
-  drawBar(document.getElementById('pm-repair'),pmBySite,'site','avg_repair_days');
-
-  drawBar(document.getElementById('co-total'),coBySite,'site','total_wo');
-  drawPie(document.getElementById('co-pie'),coMeta.open_wo,coMeta.closed_wo);
-  drawBar(document.getElementById('co-repair'),coBySite,'site','avg_repair_days');
-
-  // Top devices (Corrective)
-  drawTopDevices(document.getElementById('cm-dev'),topDev);
-
-  renderRank(document.getElementById('cm-rank'),cmBySite);
-  renderRank(document.getElementById('pm-rank'),pmBySite);
-  renderRank(document.getElementById('co-rank'),coBySite);
-
-  renderSites(document.getElementById('cm-sites'),cmBySite);
-  renderSites(document.getElementById('pm-sites'),pmBySite);
-  renderSites(document.getElementById('co-sites'),coBySite);
+  // Winners chip
+  winners(co);
 }
 
-/* devices chart */
-function drawTopDevices(svg,rows){
-  const w=svg.clientWidth,h=svg.clientHeight,p=40; svg.innerHTML='';
-  if(!rows.length){
-    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x',w/2);t.setAttribute('y',h/2);t.setAttribute('text-anchor','middle');
-    t.textContent='No device breakdown found.'; svg.appendChild(t); return;
-  }
-  const max=Math.max(1,...rows.map(d=>d.count||0));
-  const bw=(w-p*2)/rows.length;
-  const axis=document.createElementNS('http://www.w3.org/2000/svg','line');
-  axis.setAttribute('x1',p);axis.setAttribute('y1',h-p);axis.setAttribute('x2',w-p);axis.setAttribute('y2',h-p);
-  axis.setAttribute('stroke','#9ca3af');svg.appendChild(axis);
-  rows.forEach((d,i)=>{
-    const x=p+i*bw+5, y=h-p-((d.count||0)/max*(h-p*2));
-    const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
-    r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',Math.max(2,bw-10));
-    r.setAttribute('height',(h-p)-y);r.setAttribute('fill','var(--blue)');svg.appendChild(r);
-    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x',x+(bw-10)/2);t.setAttribute('y',h-10);t.setAttribute('font-size','10');t.setAttribute('text-anchor','middle');
-    t.textContent=String(d.device).slice(0,12);svg.appendChild(t);
-  });
+/* KPI blocks render */
+function renderKPIs(id,m,extra){
+  document.getElementById(id).innerHTML = `
+    <div class="kpi"><span>Total Work Orders</span><b>${m.total_wo.toLocaleString()}</b></div>
+    <div class="kpi"><span>Open Work Orders</span><b>${m.open_wo.toLocaleString()} <i class="badge red">Open</i></b></div>
+    <div class="kpi"><span>Closed Work Orders</span><b>${m.closed_wo.toLocaleString()} <i class="badge green">Closed</i></b></div>
+    <div class="kpi"><span>Open Rate</span><b>${m.open_rate_pct.toFixed(1)}%</b></div>
+    <div class="kpi"><span>Avg. Response (days)</span><b>${m.avg_response_days!=null?m.avg_response_days.toFixed(2):'—'}</b></div>
+    <div class="kpi"><span>Avg. Repair (days)</span><b>${m.avg_repair_days!=null?m.avg_repair_days.toFixed(2):'—'}</b></div>
+    ${extra && m.not_opened!=null ? `<div class="kpi"><span>Not Opened (Response KPI blank)</span><b>${m.not_opened.toLocaleString()}</b></div>`:''}
+  `;
 }
 </script>
 </body>
