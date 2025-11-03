@@ -1,329 +1,637 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Mobile Team Monthly Maintenance KPIs – September 2025</title>
-<style>
-:root{
-  --bg:#f3f4f6; --panel:#ffffff; --muted:#6b7280; --text:#1e293b;
-  --card:#f9fafb; --border:#e5e7eb; --shadow:0 6px 18px rgba(0,0,0,.06);
-  --gold:#f59e0b;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Roboto,Arial,"Segoe UI",sans-serif}
-.container{max-width:1280px;margin:32px auto;padding:0 18px}
-.brandbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.brandlogo{background:#fff;border:1px solid var(--border);border-radius:16px;padding:8px;box-shadow:var(--shadow)}
-.brandlogo img{height:56px;display:block;background:#fff}
-header.brand{text-align:center}
-h1{margin:6px 0 2px 0;font-size:28px;font-weight:800}
-.subtitle{margin:0;color:var(--muted);font-size:14px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:16px 0}
-.toolbar .input{background:#fff;border:1px solid var(--border);padding:8px 12px;border-radius:12px}
-.toolbar button{padding:10px 16px;border:1px solid var(--border);border-radius:999px;background:#fff;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
-.tabs{position:sticky;top:0;background:rgba(243,244,246,.95);backdrop-filter:saturate(140%) blur(4px);display:flex;gap:10px;margin:18px 0;padding:10px;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);z-index:2;justify-content:center;flex-wrap:wrap}
-.tab{padding:10px 16px;border:1px solid var(--border);background:#fff;border-radius:999px;cursor:pointer;font-weight:700}
-.tab.active{background:var(--card)}
-.view{display:none}
-.view.active{display:block}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
-.card h3{margin:0 0 10px 0}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
-th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
-thead th{background:#eef2f7}
-.badge{display:inline-block;padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;margin-left:8px;color:#334155;font-weight:700}
-.reveal{text-align:center;margin:6px 0 12px 0}
-.reveal button{padding:10px 16px;border:1px solid var(--border);border-radius:999px;background:#fff;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
-.winners{margin-top:10px;border:2px solid var(--gold);background:linear-gradient(180deg,#fffaf0,#fff4d6);border-radius:20px;padding:16px;box-shadow:var(--shadow);display:none}
-.winner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.winner-grid .slot{background:#fff;border:1px solid #fcd34d;border-radius:14px;padding:12px;text-align:center}
-.winner-grid .first{border-width:2px}
-details.tech{background:#fff;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;box-shadow:var(--shadow)}
-details.tech>summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:800;color:#111827}
-details.tech>summary::-webkit-details-marker{display:none}
-.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}
-.kv div{background:#f9fafb;padding:8px;border:1px solid var(--border);border-radius:10px}
-.bar{height:10px;background:#e5e7eb;border-radius:8px;overflow:hidden}
-.bar>span{display:block;height:100%;background:#60a5fa}
-footer{margin:14px 0;text-align:center}
-.small{color:#6b7280;font-size:12px}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة تحليل الصيانة (WO & PPM & Combined)</title>
+
+  <!-- Chart.js & SheetJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{margin:0;background:#f5f7fa;color:#333}
+    .wrap{max-width:1400px;margin:0 auto;padding:16px}
+    header{background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 6px 16px rgba(0,0,0,.06);display:flex;gap:16px;align-items:center;margin-bottom:16px}
+    header img{height:56px}
+    .titles{flex:1}
+    h1{margin:0;font-size:1.6rem;color:#2c3e50}
+    .credit{margin-top:6px;color:#5a6b85;font-size:.95rem}
+    .tabs{display:flex;gap:8px;margin:10px 0 16px;flex-wrap:wrap}
+    .tab-btn{border:1px solid #d8dee9;background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}
+    .tab-btn.active{background:#2c3e50;color:#fff;border-color:#2c3e50}
+    .card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 6px 16px rgba(0,0,0,.06);margin-bottom:16px}
+    .card h2{margin:0 0 10px;font-size:1.1rem;color:#2c3e50;border-bottom:2px solid #f0f2f5;padding-bottom:8px}
+    .uploader{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:#eef2f7;border:1px dashed #cdd6e1;border-radius:999px;padding:8px 12px;cursor:pointer}
+    .pill input{display:none}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+    .stat{background:#fff;border-radius:10px;padding:12px;border-top:4px solid #4a6491;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+    .stat.good{border-top-color:#28a745}.stat.warn{border-top-color:#ffc107}.stat.bad{border-top-color:#dc3545}
+    .stat .v{font-size:1.4rem;font-weight:700}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+    .filters select{padding:10px 12px;border:1px solid #d8dee9;border-radius:10px;min-width:200px;background:#fff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+    .row-two{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .chart-box{height:320px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px 12px;border-bottom:1px solid #edf0f5;text-align:right}
+    th{background:#f7f9fc;color:#2c3e50}
+    tr:hover{background:#f5f7fa}
+    .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:.8rem;font-weight:700}
+    .b-ok{background:#d4edda;color:#155724}.b-warn{background:#fff3cd;color:#856404}.b-bad{background:#f8d7da;color:#721c24}
+    .progress{height:10px;background:#e9ecef;border-radius:6px;overflow:hidden}
+    .progress .fill{height:100%;background:#28a745}
+    footer{color:#6b7280;text-align:center;margin:10px 0 20px}
+    .hidden{display:none}
+    .hint{color:#6b7280;font-size:.9rem}
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="brandbar">
-    <div class="brandlogo"><img src="TabukCluster.jpeg" alt="Tabuk Health Cluster"></div>
-    <div class="brandlogo"><img src="FGC.jpeg" alt="FGC"></div>
-  </div>
-  <header class="brand">
-    <h1>Mobile Team Monthly Maintenance KPIs – September 2025</h1>
-    <div class="subtitle">Performance Analysis for the Mobile Maintenance Team – Tabuk Region</div>
+<div class="wrap">
+  <!-- Header -->
+  <header>
+    <img src="TabukCluster.jpeg" alt="Tabuk Health Cluster"/>
+    <div class="titles">
+      <h1>لوحة تحليل الصيانة — تصحيحية (WO) ووقائية (PPM) ومجمّعة</h1>
+      <div class="credit">تم إعداد المؤشرات عن طريق مدير موقع الفريق المتحرك م. أحمد عادل</div>
+    </div>
   </header>
 
-  <div class="toolbar">
-    <label class="input">Corrective CSV: <input id="file-corrective" type="file" accept=".csv"/></label>
-    <label class="input">PPM CSV: <input id="file-ppm" type="file" accept=".csv"/></label>
-    <button id="build">Build Dashboard</button>
-    <span class="small">Tip: Save Wo.xlsx &amp; ppm.xlsx as CSV first (same folder as this file).</span>
-  </div>
-
+  <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" data-target="combined">🏆 Combined (Overall)</button>
-    <button class="tab" data-target="corrective">🔧 Corrective WO</button>
-    <button class="tab" data-target="ppm">🛠️ PPM WO</button>
+    <button class="tab-btn active" data-tab="wo">WO — الصيانة التصحيحية</button>
+    <button class="tab-btn" data-tab="ppm">PPM — الصيانة الوقائية</button>
+    <button class="tab-btn" data-tab="combined">مجمّعة</button>
   </div>
 
-  <div id="combined" class="view active"></div>
-  <div id="corrective" class="view"></div>
-  <div id="ppm" class="view"></div>
+  <!-- WO TAB -->
+  <section id="tab-wo">
+    <div class="card">
+      <h2>البيانات (WO)</h2>
+      <div class="uploader">
+        <label class="pill">📄 رفع ملف Wo.xlsx
+          <input type="file" id="woFile" accept=".xlsx,.xls"/>
+        </label>
+        <span id="woHint" class="hint">💡 ارفع ملف WO ليتم احتساب كل المؤشرات تلقائيًا.</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div>إجمالي الأوامر</div><div id="wo-total" class="v">-</div></div>
+        <div class="stat good"><div>الأوامر المنتهية</div><div id="wo-done" class="v">-</div><div id="wo-donep" class="hint"></div></div>
+        <div class="stat warn"><div>تحت الإصلاح</div><div id="wo-pend" class="v">-</div><div id="wo-pendp" class="hint"></div></div>
+        <div class="stat"><div>عدد الفنيين</div><div id="wo-techs" class="v">-</div></div>
+        <div class="stat"><div>Avg Response KPI</div><div id="wo-resp" class="v">-</div><div class="hint">&lt; 1 يوم</div></div>
+        <div class="stat"><div>Avg Repair KPI</div><div id="wo-rep" class="v">-</div><div class="hint">&lt; 5 أيام</div></div>
+      </div>
+      <div class="progress" style="margin-top:8px"><div id="wo-rate" class="fill" style="width:0%"></div></div>
+      <div class="hint" style="text-align:left;margin-top:6px">نسبة الإنجاز</div>
+    </div>
 
-  <footer>
-    <strong>Evaluation prepared by Eng. Ahmed Adel – Mobile Maintenance Project Manager</strong>
-  </footer>
+    <div class="card">
+      <h2>الفلاتر</h2>
+      <div class="filters">
+        <select id="wo-tech-filter"><option value="">جميع الفنيين (Assigned To)</option></select>
+        <select id="wo-status-filter">
+          <option value="">جميع الحالات</option>
+          <option value="completed">منتهي</option>
+          <option value="pending">تحت الإصلاح</option>
+        </select>
+        <select id="wo-dept-filter"><option value="">كل المراكز (Department)</option></select>
+      </div>
+    </div>
+
+    <!-- الصف الأول: توزيع + متوسطات -->
+    <div class="row-two">
+      <div class="card"><h2>توزيع الأوامر (منتهي/تحت الإصلاح)</h2><div class="chart-box"><canvas id="wo-status"></canvas></div></div>
+      <div class="card"><h2>متوسط Response/Repair لكل فني</h2><div class="chart-box"><canvas id="wo-bars"></canvas></div></div>
+    </div>
+
+    <!-- الصف الثاني: أجهزة + مراكز -->
+    <div class="row-two">
+      <div class="card"><h2>الأجهزة الأكثر تعطّلًا (WO فقط)</h2><div class="chart-box"><canvas id="wo-devices"></canvas></div></div>
+      <div class="card"><h2>أكثر المراكز الصحية تعطّلًا (Department)</h2><div class="chart-box"><canvas id="wo-depts"></canvas></div></div>
+    </div>
+
+    <div class="card">
+      <h2>جدول أداء الفنيين (WO)</h2>
+      <table id="wo-tech-table">
+        <thead>
+          <tr>
+            <th>الفني</th><th>إجمالي</th><th>منتهي</th><th>تحت الإصلاح</th>
+            <th>Avg Response</th><th>Avg Repair</th><th>التقييم</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2 id="wo-pending-title">الأوامر تحت الإصلاح</h2>
+      <table id="wo-pending">
+        <thead>
+          <tr><th>رقم</th><th>Assigned To</th><th>Department</th><th>الجهاز</th><th>ملاحظة</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PPM TAB -->
+  <section id="tab-ppm" class="hidden">
+    <div class="card">
+      <h2>البيانات (PPM)</h2>
+      <div class="uploader">
+        <label class="pill">📄 رفع ملف ppm.xlsx
+          <input type="file" id="ppmFile" accept=".xlsx,.xls"/>
+        </label>
+        <span id="ppmHint" class="hint">💡 ارفع ملف PPM لحساب المؤشرات.</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div>إجمالي المهام</div><div id="ppm-total" class="v">-</div></div>
+        <div class="stat good"><div>منجز</div><div id="ppm-done" class="v">-</div><div id="ppm-donep" class="hint"></div></div>
+        <div class="stat warn"><div>غير منجز</div><div id="ppm-pend" class="v">-</div><div id="ppm-pendp" class="hint"></div></div>
+        <div class="stat"><div>عدد الفنيين</div><div id="ppm-techs" class="v">-</div></div>
+        <div class="stat"><div>Avg Response KPI</div><div id="ppm-resp" class="v">-</div><div class="hint">&lt; 15 يوم</div></div>
+        <div class="stat"><div>Avg Repair KPI</div><div id="ppm-rep" class="v">-</div><div class="hint">&lt; 30 يوم</div></div>
+      </div>
+      <div class="progress" style="margin-top:8px"><div id="ppm-rate" class="fill" style="width:0%"></div></div>
+      <div class="hint" style="text-align:left;margin-top:6px">نسبة الإنجاز (PPM)</div>
+    </div>
+
+    <div class="card">
+      <h2>الفلاتر</h2>
+      <div class="filters">
+        <select id="ppm-tech-filter"><option value="">جميع الفنيين (Assigned To)</option></select>
+        <select id="ppm-status-filter">
+          <option value="">جميع الحالات</option>
+          <option value="completed">منجز</option>
+          <option value="pending">غير منجز</option>
+        </select>
+        <select id="ppm-dept-filter"><option value="">كل المراكز (Department)</option></select>
+      </div>
+    </div>
+
+    <div class="row-two">
+      <div class="card"><h2>توزيع الحالات (منجز/غير منجز)</h2><div class="chart-box"><canvas id="ppm-status"></canvas></div></div>
+      <div class="card"><h2>متوسط Response/Repair لكل فني</h2><div class="chart-box"><canvas id="ppm-bars"></canvas></div></div>
+    </div>
+
+    <div class="card">
+      <h2>المراكز الصحية (Department)</h2>
+      <div class="chart-box"><canvas id="ppm-depts"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h2>جدول أداء الفنيين (PPM)</h2>
+      <table id="ppm-tech-table">
+        <thead>
+          <tr>
+            <th>الفني</th><th>إجمالي</th><th>منجز</th><th>غير منجز</th>
+            <th>Avg Response</th><th>Avg Repair</th><th>التقييم</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2 id="ppm-pending-title">المهام غير المنجزة</h2>
+      <table id="ppm-pending">
+        <thead>
+          <tr><th>رقم</th><th>Assigned To</th><th>Department</th><th>الجهاز</th><th>ملاحظة</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- COMBINED TAB -->
+  <section id="tab-combined" class="hidden">
+    <div class="card">
+      <h2>جدول مجمّع (WO + PPM)</h2>
+      <div class="hint" style="margin-bottom:8px">الفرز: نسبة الإنجاز ↓ ، ثم Avg Repair ↑ ، ثم Avg Response ↑ ، ثم إجمالي الأوامر ↓</div>
+      <table id="combined-table">
+        <thead>
+          <tr>
+            <th>الفني</th>
+            <th>إجمالي الأوامر (WO+PPM)</th>
+            <th>نسبة الإنجاز مجمّع</th>
+            <th>Avg Repair (WO+PPM)</th>
+            <th>Avg Response (WO+PPM)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="hint" id="combined-hint" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <footer>لوحة تحليل الصيانة — Tabuk Health Cluster • 2025</footer>
 </div>
 
 <script>
-/* ---- CSV helpers ---- */
-function parseCSV(text){
-  const rows=[]; let i=0, cur="", inQ=false; const push=()=>{rows[rows.length-1].push(cur);cur="";}
-  rows.push([]);
-  for(;i<text.length;i++){
-    const c=text[i], n=text[i+1];
-    if(inQ){
-      if(c==='"' && n==='"'){cur+='"'; i++; continue;}
-      if(c==='"'){inQ=false; continue;}
-      cur+=c; continue;
-    }
-    if(c==='"' && cur===""){inQ=true; continue;}
-    if(c===','){push(); continue;}
-    if(c==='\n'){push(); rows.push([]); continue;}
-    if(c==='\r'){continue;}
-    cur+=c;
-  }
-  push();
-  if(rows.length && rows[rows.length-1].length===1 && rows[rows.length-1][0]==="") rows.pop();
-  return rows;
-}
-function toObjects(rows){
-  if(!rows.length) return [];
-  const header = rows[0].map(h=>String(h||"").trim());
-  return rows.slice(1).map(r=>{
-    const o={};
-    header.forEach((h,idx)=>{o[h]=r[idx]!==undefined?r[idx]:"";});
-    return o;
-  });
-}
-function num(v){
-  if(v===null||v===undefined) return NaN;
-  const s=String(v).trim();
-  if(s==="") return NaN;
-  const n=Number(s.replace(/,/g,""));
-  return isNaN(n)?NaN:n;
-}
-function detectCols(header){
-  let tech=null, resp=null, rep=null;
-  header.forEach((h,idx)=>{
-    const lc=h.toLowerCase();
-    if(!tech && (lc.includes("assigned to")||lc.includes("technician")||lc.includes("الفني")||lc.includes("assignee")||lc==="assigned")) tech=idx;
-    if(!resp && lc.includes("kpi") && (lc.includes("res")||lc.includes("resp")||lc.includes("response")||lc.includes("respose"))) resp=idx;
-    if(!rep  && lc.includes("kpi") && (lc.includes("rep")||lc.includes("repair")||lc.includes("repaired")||lc.includes("repierd"))) rep=idx;
-  });
-  if(tech==null) tech=0;
-  if(resp==null){ header.forEach((h,i)=>{ if(/res.*kpi/i.test(h)) resp=i; }); }
-  if(rep==null){ header.forEach((h,i)=>{ if(/rep.*kpi/i.test(h)) rep=i; }); }
-  return {tech,resp,rep};
-}
-function computeKPI(rows){
-  if(!rows.length) return [];
-  const cols=detectCols(rows[0]);
-  const body=rows.slice(1);
-  const map=new Map();
-  body.forEach(r=>{
-    const name=String(r[cols.tech]??"").trim()||"Unassigned";
-    const resp=num(r[cols.resp]);
-    const rep =num(r[cols.rep]);
-    const under = isNaN(rep); // no Repair KPI => still under repair
-    if(!map.has(name)) map.set(name,{Technician:name, n:0, respSum:0, repSum:0, repN:0, finished:0, under:0});
-    const o=map.get(name);
-    o.n+=1;
-    if(!isNaN(resp)) o.respSum+=resp;
-    if(!isNaN(rep)) {o.repSum+=rep; o.repN+=1;}
-    if(under) o.under+=1; else o.finished+=1;
-  });
-  const out=[...map.values()].map(o=>{
-    const Avg_Response_Days = o.n? +(o.respSum/o.n).toFixed(2):0;
-    const Avg_Repair_Days   = o.repN? +(o.repSum/o.repN).toFixed(2):0;
-    const Finished=o.finished, UnderRepair=o.under, WorkOrders=o.n;
-    const denom=Finished+UnderRepair;
-    const CompletionRate = denom? +((Finished/denom)*100).toFixed(1):0;
-    return {Technician:o.Technician, Avg_Response_Days, Avg_Repair_Days, Finished, UnderRepair, CompletionRate_%:CompletionRate, WorkOrders};
-  });
-  return out;
-}
-function rankLogic(arr){
-  return arr.slice().sort((a,b)=>{
-    if(b.CompletionRate_%!==a.CompletionRate_%) return b.CompletionRate_%-a.CompletionRate_%;
-    if(a.Avg_Response_Days!==b.Avg_Response_Days) return a.Avg_Response_Days-b.Avg_Response_Days;
-    if(a.Avg_Repair_Days!==b.Avg_Repair_Days) return a.Avg_Repair_Days-b.Avg_Repair_Days;
-    return b.WorkOrders-a.WorkOrders;
-  });
-}
-/* UI helpers */
-function percentBar(pct){
-  const v=Math.max(0,Math.min(100, pct||0));
-  return `<div class="bar"><span style="width:${v}%"></span></div>`;
-}
-function tableHTML(arr, title){
-  const rows=arr.map(r=>`
-    <tr>
-      <td><button class="link-tech" data-name="${r.Technician}">${r.Technician}</button></td>
-      <td>${r.Avg_Response_Days}</td>
-      <td>${r.Avg_Repair_Days}</td>
-      <td>${r.Finished}</td>
-      <td>${r.UnderRepair}</td>
-      <td>${r.CompletionRate_%}% ${percentBar(r.CompletionRate_%)}</td>
-      <td>${r.WorkOrders}</td>
-    </tr>`).join("");
-  return `
-    <div class="card">
-      <h3>Technicians – KPI Summary <span class="badge">${title}</span></h3>
-      <table>
-        <thead><tr>
-          <th>Technician</th><th>Avg_Response_Days</th><th>Avg_Repair_Days</th>
-          <th>Finished</th><th>UnderRepair</th><th>CompletionRate_%</th><th>WorkOrders</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
-}
-function winnersHTML(title, ranked){
-  const top1=ranked[0]?.Technician||"", top2=ranked[1]?.Technician||"", top3=ranked[2]?.Technician||"", last=ranked[ranked.length-1]?.Technician||"";
-  const key=title.toLowerCase().replace(/\s+/g,'_');
-  return `
-    <div class="reveal">
-      <button id="reveal_${key}">Click to Reveal Winners 🏆</button>
-      <div class="winners" id="wins_${key}" style="display:none">
-        <div class="winner-grid">
-          <div class="slot first"><b>#1</b><div>${top1}</div></div>
-          <div class="slot"><b>#2</b><div>${top2}</div></div>
-          <div class="slot"><b>#3</b><div>${top3}</div></div>
-          <div class="slot last"><b>Last</b><div>${last}</div></div>
-        </div>
-      </div>
-    </div>
-    <script>
-      (function(){
-        var b=document.getElementById('reveal_${key}');
-        var w=document.getElementById('wins_${key}');
-        if(b&&w){
-          b.addEventListener('click', function(){
-            var open=w.style.display==='block';
-            w.style.display=open?'none':'block';
-            b.textContent=open?'Click to Reveal Winners 🏆':'Hide Winners';
-          });
-        }
-      })();
-    </script>`;
-}
-function median(arr){
-  const v=arr.filter(x=>typeof x==="number" && !isNaN(x)).sort((a,b)=>a-b);
-  if(!v.length) return 0;
-  const m=Math.floor(v.length/2);
-  return v.length%2? v[m] : (v[m-1]+v[m])/2;
-}
-function drilldownHTML(arr){
-  if(!arr.length) return "";
-  const respMed = median(arr.map(a=>a.Avg_Response_Days));
-  const repMed  = median(arr.map(a=>a.Avg_Repair_Days));
-  const compMed = median(arr.map(a=>a.CompletionRate_%));
-  const items = arr.map(r=>{
-    const recs = [];
-    recs.push(r.Avg_Response_Days<=respMed ? "Great response — keep same-day acknowledgement." : "Aim for same-day acknowledgement on new WOs.");
-    recs.push(r.Avg_Repair_Days<=repMed ? "Solid repair speed — document fixes to playbook." : "Prepare spares & pre-diagnosis to reduce downtime.");
-    recs.push(r.CompletionRate_%>=compMed ? "Good closure rate — keep daily wrap-up." : "Close pending jobs daily & escalate blockers early.");
-    return `
-      <details class="tech"><summary>${r.Technician}</summary>
-        <div class="kv">
-          <div><span>Work Orders</span><strong>${r.WorkOrders}</strong></div>
-          <div><span>Avg Response (d)</span><strong>${r.Avg_Response_Days}</strong></div>
-          <div><span>Avg Repair (d)</span><strong>${r.Avg_Repair_Days}</strong></div>
-          <div><span>Finished</span><strong>${r.Finished}</strong></div>
-          <div><span>Under Repair</span><strong>${r.UnderRepair}</strong></div>
-          <div><span>Completion %</span><strong>${r.CompletionRate_%}</strong></div>
-        </div>
-        <h4>How KPIs are calculated</h4>
-        <ul>
-          <li><b>Avg Response</b> = mean(Start − Fail) days</li>
-          <li><b>Avg Repair</b> = mean(Sign Off − Fail) days</li>
-          <li><b>Completion</b> = Finished ÷ (Finished + Under Repair)</li>
-        </ul>
-        <h4>Recommendations</h4>
-        <ul>${recs.map(x=>`<li>${x}</li>`).join("")}</ul>
-      </details>`;
-  }).join("");
-  return `<div class="card"><h3>Per-Technician Drill-down & Recommendations</h3>${items}</div>`;
-}
-function buildSection(targetEl, title, ranked){
-  targetEl.innerHTML = `
-    ${winnersHTML(title, ranked)}
-    ${tableHTML(ranked, title)}
-    ${drilldownHTML(ranked)}
-  `;
-}
-/* ---- Tabs ---- */
-document.querySelectorAll('.tab').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.target).classList.add('active');
-    window.scrollTo({top:0,behavior:'smooth'});
-  });
-});
-/* ---- Build ---- */
-document.getElementById("build").addEventListener("click", async ()=>{
-  const fCor = document.getElementById("file-corrective").files[0];
-  const fPPM = document.getElementById("file-ppm").files[0];
-  if(!fCor || !fPPM){ alert("Please select both Corrective CSV and PPM CSV."); return; }
-  const [t1, t2] = await Promise.all([fCor.text(), fPPM.text()]);
-  const rowsCor = parseCSV(t1), rowsPPM = parseCSV(t2);
+/* ===== Utilities & Aliases ===== */
+const isEmptyDate = (v) => v==null || String(v).trim()==='';
+const toNum = (v)=>{ if(v==null||v==='') return null; const n=Number(String(v).replace(',','.')); return isNaN(n)? null : n; };
+const pick = (row, candidates)=>{
+  const map=Object.fromEntries(Object.keys(row).map(k=>[k.toLowerCase().trim(),k]));
+  for(const c of candidates){ const key=Object.keys(map).find(x=>x===c || x.includes(c)); if(key) return map[key]; }
+  return null;
+};
 
-  const cor = rankLogic( computeKPI(rowsCor) );
-  const ppm = rankLogic( computeKPI(rowsPPM) );
-  // combined weighted by WorkOrders
-  const byName = new Map();
-  function add(arr){
-    arr.forEach(x=>{
-      const k=x.Technician;
-      if(!byName.has(k)) byName.set(k,{Technician:k, w:0, respW:0, repW:0, fin:0, und:0});
-      const o=byName.get(k);
-      o.w+=x.WorkOrders;
-      o.respW+=x.Avg_Response_Days*x.WorkOrders;
-      o.repW +=x.Avg_Repair_Days*x.WorkOrders;
-      o.fin+=x.Finished; o.und+=x.UnderRepair;
+const COL = {
+  assigned: ['assigned to','technician','الفني'],
+  respKPI:  ['respose kpi','response kpi','response','avg response'],
+  repKPI:   ['repierd kpi','repaired kpi','repair kpi','repair','avg repair'],
+  signoff:  ['sign off date','sign-off date','sign off','تاريخ الإغلاق','تاريخ الاقفال','signoff'],
+  dept:     ['department','القسم','site/department','site','الموقع'],
+  device:   ['device','equipment','الجهاز','ecri','equipment name','asset']
+};
+
+async function parseExcel(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=(e)=>{ resolve(parseExcelBuffer(e.target.result)); };
+    r.onerror=reject;
+    r.readAsArrayBuffer(file);
+  });
+}
+
+// قراءة من ArrayBuffer مباشرة (للاوتوماتيك)
+async function parseExcelBuffer(arrayBuffer){
+  const wb=XLSX.read(new Uint8Array(arrayBuffer),{type:'array'});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const arr=XLSX.utils.sheet_to_json(ws,{defval:''});
+  if(!arr.length) return [];
+  const c={
+    assigned: pick(arr[0], COL.assigned),
+    respKPI:  pick(arr[0], COL.respKPI),
+    repKPI:   pick(arr[0], COL.repKPI),
+    signoff:  pick(arr[0], COL.signoff),
+    dept:     pick(arr[0], COL.dept),
+    device:   pick(arr[0], COL.device)
+  };
+  return arr.map((r,i)=>({
+    idx:i+1,
+    assigned:c.assigned? r[c.assigned]:'غير محدد',
+    resp:    c.respKPI ? toNum(r[c.respKPI]) : null,
+    rep:     c.repKPI  ? toNum(r[c.repKPI])  : null,
+    status:  c.signoff ? (isEmptyDate(r[c.signoff])?'pending':'completed') : (r['status']?.toLowerCase?.().includes('comp')?'completed':'pending'),
+    dept:    c.dept? r[c.dept]:'غير محدد',
+    device:  c.device? r[c.device]:'غير معروف'
+  }));
+}
+
+function avg(arr){ return arr.length? +(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2) : null; }
+
+/* ===== Targets Coloring ===== */
+function colorByTarget(val, target){
+  if(val==null) return {text:'-', cls:''};
+  if(val < target.ok)   return {text:val, cls:'b-ok'};
+  if(val < target.warn) return {text:val, cls:'b-warn'};
+  return {text:val, cls:'b-bad'};
+}
+const TARGETS = {
+  WO:   { response:{ok:1,  warn:1},  repair:{ok:5,  warn:5}  }, // <1 / <5
+  PPM:  { response:{ok:15, warn:15}, repair:{ok:30, warn:30} }  // <15 / <30
+};
+
+/* ===== Aggregation (generic) ===== */
+function aggregate(rows, filters){
+  const fTech=filters.tech||'', fStatus=filters.status||'', fDept=filters.dept||'';
+  const filtered=rows.filter(r=>{
+    const okT=!fTech || String(r.assigned)===fTech;
+    const okS=!fStatus || r.status===fStatus;
+    const okD=!fDept || String(r.dept)===fDept;
+    return okT&&okS&&okD;
+  });
+  // by tech
+  const tmap=new Map();
+  filtered.forEach(r=>{
+    if(!tmap.has(r.assigned)) tmap.set(r.assigned,{name:r.assigned,total:0,done:0,pend:0,rs:[],rp:[]});
+    const t=tmap.get(r.assigned);
+    t.total++; (r.status==='completed')? t.done++ : t.pend++;
+    if(r.resp!=null) t.rs.push(r.resp);
+    if(r.rep!=null)  t.rp.push(r.rep);
+  });
+  const byTech=Array.from(tmap.values()).map(t=>({
+    name:t.name,total:t.total,done:t.done,pend:t.pend,
+    resp:avg(t.rs), rep:avg(t.rp)
+  })).sort((a,b)=> b.total-a.total);
+
+  // by device
+  const devMap=new Map();
+  filtered.forEach(r=> devMap.set(r.device,(devMap.get(r.device)||0)+1));
+  const byDevice=Array.from(devMap.entries()).map(([name,count])=>({name,count}))
+                      .sort((a,b)=> b.count-a.count).slice(0,15);
+
+  // by dept
+  const dmap=new Map();
+  filtered.forEach(r=> dmap.set(r.dept,(dmap.get(r.dept)||0)+1));
+  const byDept=Array.from(dmap.entries()).map(([name,count])=>({name,count}))
+                    .sort((a,b)=> b.count-a.count).slice(0,15);
+
+  const total=filtered.length, done=filtered.filter(r=>r.status==='completed').length;
+  const pend=total-done, rate= total? Math.round(done*1000/total)/10 : 0;
+
+  const pendingRows=filtered.filter(r=>r.status==='pending');
+  const techs=Array.from(new Set(rows.map(r=>r.assigned))).sort((a,b)=> a.localeCompare(b,'ar'));
+  const depts=Array.from(new Set(rows.map(r=>r.dept))).sort((a,b)=> a.localeCompare(b,'ar'));
+  return {filtered,byTech,byDevice,byDept,total,done,pend,rate,pendingRows,techs,depts};
+}
+
+/* ===== Charts helpers ===== */
+const charts={};
+function drawDoughnut(id,labels,data){
+  if(charts[id]) charts[id].destroy();
+  charts[id]=new Chart(document.getElementById(id).getContext('2d'),{
+    type:'doughnut',
+    data:{labels,datasets:[{data,borderWidth:1,backgroundColor:['#28a745','#ffc107','#36b9cc','#4e73df','#e74a3b']}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',rtl:true}}}
+  });
+}
+function drawBars(id,labels,ds){
+  if(charts[id]) charts[id].destroy();
+  charts[id]=new Chart(document.getElementById(id).getContext('2d'),{
+    type:'bar',
+    data:{labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}
+  });
+}
+
+/* ===== WO state ===== */
+let WO_ROWS=[];
+function refreshWO(){
+  const filters={tech:woTech.value,status:woStatus.value,dept:woDept.value};
+  const A=aggregate(WO_ROWS,filters);
+
+  // Fill selects once
+  if(woTech.options.length<=1) A.techs.forEach(t=> woTech.insertAdjacentHTML('beforeend',`<option>${t}</option>`));
+  if(woDept.options.length<=1) A.depts.forEach(d=> woDept.insertAdjacentHTML('beforeend',`<option>${d}</option>`));
+
+  woTotal.textContent=A.total; woDone.textContent=A.done; woPend.textContent=A.pend;
+  woDoneP.textContent=`${A.rate}% من الإجمالي`; woPendP.textContent=`${(100-A.rate).toFixed(1)}% من الإجمالي`;
+  woTechs.textContent=new Set(A.filtered.map(r=>r.assigned)).size;
+  woRate.style.width=`${A.rate}%`;
+
+  const respAll=A.filtered.map(r=>r.resp).filter(x=>x!=null);
+  const repAll=A.filtered.map(r=>r.rep).filter(x=>x!=null);
+  const respAvg=avg(respAll)||0, repAvg=avg(repAll)||0;
+  const rCol=colorByTarget(respAvg, TARGETS.WO.response);
+  const fCol=colorByTarget(repAvg,  TARGETS.WO.repair);
+  woResp.innerHTML=`<span class="badge ${rCol.cls}">${rCol.text}</span>`;
+  woRep.innerHTML =`<span class="badge ${fCol.cls}">${fCol.text}</span>`;
+
+  drawDoughnut('wo-status',[`منتهي (${A.done})`,`تحت الإصلاح (${A.pend})`],[A.done,A.pend]);
+  drawBars('wo-bars', A.byTech.map(t=>t.name), [
+    {label:'Avg Response', data:A.byTech.map(t=>t.resp??0), borderWidth:1, backgroundColor:'rgba(54,162,235,.7)'},
+    {label:'Avg Repair',   data:A.byTech.map(t=>t.rep??0),  borderWidth:1, backgroundColor:'rgba(255,99,132,.7)'}
+  ]);
+  drawDoughnut('wo-devices', A.byDevice.map(d=>d.name), A.byDevice.map(d=>d.count));
+  drawBars('wo-depts', A.byDept.map(d=>d.name), [{label:'WO count', data:A.byDept.map(d=>d.count), borderWidth:1, backgroundColor:'rgba(75,192,192,.7)'}]);
+
+  const tb=document.querySelector('#wo-tech-table tbody'); tb.innerHTML='';
+  A.byTech.forEach(t=>{
+    const rCol=colorByTarget(t.resp, TARGETS.WO.response);
+    const fCol=colorByTarget(t.rep,  TARGETS.WO.repair);
+    tb.insertAdjacentHTML('beforeend',`
+      <tr>
+        <td>${t.name}</td><td>${t.total}</td><td>${t.done}</td><td>${t.pend}</td>
+        <td><span class="badge ${rCol.cls}">${rCol.text}</span></td>
+        <td><span class="badge ${fCol.cls}">${fCol.text}</span></td>
+        <td>${rankBadge(t.resp,t.rep)}</td>
+      </tr>`);
+  });
+
+  const pb=document.querySelector('#wo-pending tbody'); pb.innerHTML='';
+  document.getElementById('wo-pending-title').textContent=`الأوامر تحت الإصلاح (${A.pend})`;
+  A.pendingRows.forEach(r=>{
+    pb.insertAdjacentHTML('beforeend',`<tr><td>${r.idx}</td><td>${r.assigned}</td><td>${r.dept}</td><td>${r.device}</td><td>Sign-off فارغ</td></tr>`);
+  });
+
+  refreshCombinedHint(); // لتوضيح حالة الدمج
+}
+
+function rankBadge(resp,rep){
+  const r=resp??9e9, f=rep??9e9;
+  if(r<1 && f<5) return '<span class="badge b-ok">ممتاز</span>';
+  if(r<2.5 && f<3.5) return '<span class="badge b-ok">جيد جداً</span>';
+  if(r<3.5 && f<5) return '<span class="badge b-warn">متوسط</span>';
+  if(r<5.5 && f<7.5) return '<span class="badge b-warn">يحتاج تحسين</span>';
+  return '<span class="badge b-bad">ضعيف</span>';
+}
+
+/* ===== PPM state ===== */
+let PPM_ROWS=[];
+function refreshPPM(){
+  const filters={tech:ppmTech.value,status:ppmStatus.value,dept:ppmDept.value};
+  const A=aggregate(PPM_ROWS,filters);
+
+  if(ppmTech.options.length<=1) A.techs.forEach(t=> ppmTech.insertAdjacentHTML('beforeend',`<option>${t}</option>`));
+  if(ppmDept.options.length<=1) A.depts.forEach(d=> ppmDept.insertAdjacentHTML('beforeend',`<option>${d}</option>`));
+
+  ppmTotal.textContent=A.total; ppmDone.textContent=A.done; ppmPend.textContent=A.pend;
+  ppmDoneP.textContent=`${A.rate}% من الإجمالي`; ppmPendP.textContent=`${(100-A.rate).toFixed(1)}% من الإجمالي`;
+  ppmTechs.textContent=new Set(A.filtered.map(r=>r.assigned)).size;
+  ppmRate.style.width=`${A.rate}%`;
+
+  const respAll=A.filtered.map(r=>r.resp).filter(x=>x!=null);
+  const repAll=A.filtered.map(r=>r.rep).filter(x=>x!=null);
+  const respAvg=avg(respAll)||0, repAvg=avg(repAll)||0;
+  const rCol=colorByTarget(respAvg, TARGETS.PPM.response);
+  const fCol=colorByTarget(repAvg,  TARGETS.PPM.repair);
+  ppmResp.innerHTML=`<span class="badge ${rCol.cls}">${rCol.text}</span>`;
+  ppmRep.innerHTML =`<span class="badge ${fCol.cls}">${fCol.text}</span>`;
+
+  drawDoughnut('ppm-status',[`منجز (${A.done})`,`غير منجز (${A.pend})`],[A.done,A.pend]);
+  drawBars('ppm-bars', A.byTech.map(t=>t.name), [
+    {label:'Avg Response', data:A.byTech.map(t=>t.resp??0), borderWidth:1, backgroundColor:'rgba(54,162,235,.7)'},
+    {label:'Avg Repair',   data:A.byTech.map(t=>t.rep??0),  borderWidth:1, backgroundColor:'rgba(255,159,64,.7)'}
+  ]);
+  drawBars('ppm-depts', A.byDept.map(d=>d.name), [{label:'PPM count', data:A.byDept.map(d=>d.count), borderWidth:1, backgroundColor:'rgba(75,192,192,.7)'}]);
+
+  const tb=document.querySelector('#ppm-tech-table tbody'); tb.innerHTML='';
+  A.byTech.forEach(t=>{
+    const rCol=colorByTarget(t.resp, TARGETS.PPM.response);
+    const fCol=colorByTarget(t.rep,  TARGETS.PPM.repair);
+    tb.insertAdjacentHTML('beforeend',`
+      <tr>
+        <td>${t.name}</td><td>${t.total}</td><td>${t.done}</td><td>${t.pend}</td>
+        <td><span class="badge ${rCol.cls}">${rCol.text}</span></td>
+        <td><span class="badge ${fCol.cls}">${fCol.text}</span></td>
+        <td>${rankBadgePPM(t.resp,t.rep)}</td>
+      </tr>`);
+  });
+
+  const pb=document.querySelector('#ppm-pending tbody'); pb.innerHTML='';
+  document.getElementById('ppm-pending-title').textContent=`غير المنجزة (${A.pend})`;
+  A.pendingRows.forEach(r=>{
+    pb.insertAdjacentHTML('beforeend',`<tr><td>${r.idx}</td><td>${r.assigned}</td><td>${r.dept}</td><td>${r.device}</td><td>Sign-off فارغ</td></tr>`);
+  });
+
+  refreshCombinedHint();
+}
+
+function rankBadgePPM(resp,rep){
+  const r=resp??9e9, f=rep??9e9;
+  if(r<15 && f<30) return '<span class="badge b-ok">ضمن الهدف</span>';
+  if(r<20 && f<40) return '<span class="badge b-warn">قريب من الهدف</span>';
+  return '<span class="badge b-bad">بعيد عن الهدف</span>';
+}
+
+/* ===== Combined ===== */
+function buildCombined(){
+  const map=new Map();
+  function ingest(rows){
+    rows.forEach(r=>{
+      if(!map.has(r.assigned)) map.set(r.assigned,{name:r.assigned,total:0,done:0,rs:[],rp:[]});
+      const t=map.get(r.assigned);
+      t.total++;
+      if(r.status==='completed') t.done++;
+      if(r.resp!=null) t.rs.push(r.resp);
+      if(r.rep!=null)  t.rp.push(r.rep);
     });
   }
-  add(cor); add(ppm);
-  const combined = Array.from(byName.values()).map(o=>{
-    const w = Math.max(1,o.w);
-    const Avg_Response_Days = +(o.respW/w).toFixed(2);
-    const Avg_Repair_Days   = +(o.repW/w).toFixed(2);
-    const Finished=o.fin, UnderRepair=o.und, WorkOrders=o.w;
-    const denom=Finished+UnderRepair;
-    const CompletionRate_% = denom? +((Finished/denom)*100).toFixed(1):0;
-    return {Technician:o.Technician, Avg_Response_Days, Avg_Repair_Days, Finished, UnderRepair, CompletionRate_% , WorkOrders};
-  }).sort((a,b)=>{
-    if(b.CompletionRate_%!==a.CompletionRate_%) return b.CompletionRate_%-a.CompletionRate_%;
-    if(a.Avg_Response_Days!==b.Avg_Response_Days) return a.Avg_Response_Days-b.Avg_Response_Days;
-    if(a.Avg_Repair_Days!==b.Avg_Repair_Days) return a.Avg_Repair_Days-b.Avg_Repair_Days;
-    return b.WorkOrders-a.WorkOrders;
+  ingest(WO_ROWS);
+  ingest(PPM_ROWS);
+
+  const list=Array.from(map.values()).map(t=>({
+    name:t.name,
+    total:t.total,
+    rate: t.total? +(t.done*100/t.total).toFixed(1) : 0,
+    avgRepair: avg(t.rp) ?? null,
+    avgResp:   avg(t.rs) ?? null
+  }));
+
+  // الفرز: إنجاز ↓ ، إصلاح ↑ ، استجابة ↑ ، إجمالي ↓
+  list.sort((a,b)=>{
+    if(b.rate!==a.rate) return b.rate - a.rate;
+    if((a.avgRepair??1e9)!==(b.avgRepair??1e9)) return (a.avgRepair??1e9) - (b.avgRepair??1e9);
+    if((a.avgResp??1e9)!==(b.avgResp??1e9))     return (a.avgResp??1e9)   - (b.avgResp??1e9);
+    return (b.total - a.total);
   });
 
-  buildSection(document.getElementById("corrective"), "Corrective", cor);
-  buildSection(document.getElementById("ppm"), "PPM", ppm);
-  buildSection(document.getElementById("combined"), "Combined", combined);
+  const tb=document.querySelector('#combined-table tbody'); tb.innerHTML='';
+  list.forEach(t=>{
+    const rBadge = `<span class="badge ${t.avgRepair!=null ? (t.avgRepair<5?'b-ok':'b-bad') : ''}">${t.avgRepair ?? '-'}</span>`;
+    const sBadge = `<span class="badge ${t.avgResp!=null   ? (t.avgResp  <1?'b-ok':'b-bad')   : ''}">${t.avgResp ?? '-'}</span>`;
+    tb.insertAdjacentHTML('beforeend',`
+      <tr>
+        <td>${t.name}</td>
+        <td>${t.total}</td>
+        <td>${t.rate}%</td>
+        <td>${rBadge}</td>
+        <td>${sBadge}</td>
+      </tr>`);
+  });
+}
+
+function refreshCombinedHint(){
+  const hint=document.getElementById('combined-hint');
+  if(!WO_ROWS.length && !PPM_ROWS.length) hint.textContent='لم يتم رفع ملفات بعد.';
+  else if(WO_ROWS.length && !PPM_ROWS.length) hint.textContent='تم التجميع بناءً على WO فقط (لم يتم رفع PPM).';
+  else if(!WO_ROWS.length && PPM_ROWS.length) hint.textContent='تم التجميع بناءً على PPM فقط (لم يتم رفع WO).';
+  else hint.textContent='تم التجميع من WO و PPM.';
+}
+
+/* ===== Auto-load from repo (data/Wo.xlsx & data/ppm.xlsx) ===== */
+async function tryAutoLoadExcel(path){
+  try{
+    const res = await fetch(path, { cache: 'no-store' });
+    if(!res.ok) return null;
+    const buf = await res.arrayBuffer();
+    return parseExcelBuffer(buf);
+  }catch(e){ return null; }
+}
+
+async function autoInitFromRepo(){
+  const wo = await tryAutoLoadExcel('data/Wo.xlsx');
+  if(wo && Array.isArray(wo) && wo.length){
+    WO_ROWS = wo;
+    document.getElementById('woHint').textContent = '✔ تم التحميل تلقائيًا من data/Wo.xlsx';
+    document.getElementById('wo-tech-filter').innerHTML = '<option value="">جميع الفنيين (Assigned To)</option>';
+    document.getElementById('wo-dept-filter').innerHTML = '<option value="">كل المراكز (Department)</option>';
+    refreshWO();
+  }
+
+  const ppm = await tryAutoLoadExcel('data/ppm.xlsx');
+  if(ppm && Array.isArray(ppm) && ppm.length){
+    PPM_ROWS = ppm;
+    document.getElementById('ppmHint').textContent = '✔ تم التحميل تلقائيًا من data/ppm.xlsx';
+    document.getElementById('ppm-tech-filter').innerHTML = '<option value="">جميع الفنيين (Assigned To)</option>';
+    document.getElementById('ppm-dept-filter').innerHTML = '<option value="">كل المراكز (Department)</option>';
+    refreshPPM();
+  }
+
+  refreshCombinedHint();
+}
+
+/* ===== Wiring ===== */
+const woTech=document.getElementById('wo-tech-filter');
+const woStatus=document.getElementById('wo-status-filter');
+const woDept=document.getElementById('wo-dept-filter');
+
+const ppmTech=document.getElementById('ppm-tech-filter');
+const ppmStatus=document.getElementById('ppm-status-filter');
+const ppmDept=document.getElementById('ppm-dept-filter');
+
+const woTotal=document.getElementById('wo-total');
+const woDone=document.getElementById('wo-done');
+const woPend=document.getElementById('wo-pend');
+const woDoneP=document.getElementById('wo-donep');
+const woPendP=document.getElementById('wo-pendp');
+const woTechs=document.getElementById('wo-techs');
+const woResp=document.getElementById('wo-resp');
+const woRep=document.getElementById('wo-rep');
+const woRate=document.getElementById('wo-rate');
+
+const ppmTotal=document.getElementById('ppm-total');
+const ppmDone=document.getElementById('ppm-done');
+const ppmPend=document.getElementById('ppm-pend');
+const ppmDoneP=document.getElementById('ppm-donep');
+const ppmPendP=document.getElementById('ppm-pendp');
+const ppmTechs=document.getElementById('ppm-techs');
+const ppmResp=document.getElementById('ppm-resp');
+const ppmRep=document.getElementById('ppm-rep');
+const ppmRate=document.getElementById('ppm-rate');
+
+// Tabs switching
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab=btn.dataset.tab;
+    document.getElementById('tab-wo').classList.toggle('hidden', tab!=='wo');
+    document.getElementById('tab-ppm').classList.toggle('hidden', tab!=='ppm');
+    document.getElementById('tab-combined').classList.toggle('hidden', tab!=='combined');
+    if(tab==='combined') buildCombined();
+  });
 });
+
+['wo-tech-filter','wo-status-filter','wo-dept-filter'].forEach(id=> document.getElementById(id).addEventListener('change', refreshWO));
+['ppm-tech-filter','ppm-status-filter','ppm-dept-filter'].forEach(id=> document.getElementById(id).addEventListener('change', refreshPPM));
+
+document.getElementById('woFile').addEventListener('change', async (e)=>{
+  const f=e.target.files?.[0]; if(!f) return;
+  WO_ROWS=await parseExcel(f);
+  document.getElementById('woHint').textContent=`✔ تم تحميل: ${f.name}`;
+  woTech.innerHTML='<option value="">جميع الفنيين (Assigned To)</option>';
+  woDept.innerHTML='<option value="">كل المراكز (Department)</option>';
+  refreshWO();
+});
+
+document.getElementById('ppmFile').addEventListener('change', async (e)=>{
+  const f=e.target.files?.[0]; if(!f) return;
+  PPM_ROWS=await parseExcel(f);
+  document.getElementById('ppmHint').textContent=`✔ تم تحميل: ${f.name}`;
+  ppmTech.innerHTML='<option value="">جميع الفنيين (Assigned To)</option>';
+  ppmDept.innerHTML='<option value="">كل المراكز (Department)</option>';
+  refreshPPM();
+});
+
+// تشغيل التحميل التلقائي عند فتح الصفحة (GitHub Pages)
+window.addEventListener('DOMContentLoaded', autoInitFromRepo);
 </script>
 </body>
 </html>
