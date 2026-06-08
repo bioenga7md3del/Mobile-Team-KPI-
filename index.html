@@ -1,637 +1,228 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لوحة تحليل الصيانة (WO & PPM & Combined)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الإجازات - FGC</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-  <!-- Chart.js & SheetJS -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #1a3c6d;
+            --primary-light: #2c5aa0;
+            --accent: #e67e22;
+            --bg-color: #f4f7f6;
+            --text-dark: #333;
+        }
 
-  <style>
-    *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
-    body{margin:0;background:#f5f7fa;color:#333}
-    .wrap{max-width:1400px;margin:0 auto;padding:16px}
-    header{background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 6px 16px rgba(0,0,0,.06);display:flex;gap:16px;align-items:center;margin-bottom:16px}
-    header img{height:56px}
-    .titles{flex:1}
-    h1{margin:0;font-size:1.6rem;color:#2c3e50}
-    .credit{margin-top:6px;color:#5a6b85;font-size:.95rem}
-    .tabs{display:flex;gap:8px;margin:10px 0 16px;flex-wrap:wrap}
-    .tab-btn{border:1px solid #d8dee9;background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}
-    .tab-btn.active{background:#2c3e50;color:#fff;border-color:#2c3e50}
-    .card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 6px 16px rgba(0,0,0,.06);margin-bottom:16px}
-    .card h2{margin:0 0 10px;font-size:1.1rem;color:#2c3e50;border-bottom:2px solid #f0f2f5;padding-bottom:8px}
-    .uploader{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px}
-    .pill{display:inline-flex;align-items:center;gap:8px;background:#eef2f7;border:1px dashed #cdd6e1;border-radius:999px;padding:8px 12px;cursor:pointer}
-    .pill input{display:none}
-    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-    .stat{background:#fff;border-radius:10px;padding:12px;border-top:4px solid #4a6491;box-shadow:0 4px 12px rgba(0,0,0,.05)}
-    .stat.good{border-top-color:#28a745}.stat.warn{border-top-color:#ffc107}.stat.bad{border-top-color:#dc3545}
-    .stat .v{font-size:1.4rem;font-weight:700}
-    .filters{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
-    .filters select{padding:10px 12px;border:1px solid #d8dee9;border-radius:10px;min-width:200px;background:#fff}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
-    .row-two{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-    .chart-box{height:320px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px 12px;border-bottom:1px solid #edf0f5;text-align:right}
-    th{background:#f7f9fc;color:#2c3e50}
-    tr:hover{background:#f5f7fa}
-    .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:.8rem;font-weight:700}
-    .b-ok{background:#d4edda;color:#155724}.b-warn{background:#fff3cd;color:#856404}.b-bad{background:#f8d7da;color:#721c24}
-    .progress{height:10px;background:#e9ecef;border-radius:6px;overflow:hidden}
-    .progress .fill{height:100%;background:#28a745}
-    footer{color:#6b7280;text-align:center;margin:10px 0 20px}
-    .hidden{display:none}
-    .hint{color:#6b7280;font-size:.9rem}
-  </style>
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%; max-width: 400px;
+            text-align: center;
+            border-top: 5px solid var(--primary);
+        }
+
+        .logo { max-width: 120px; margin-bottom: 20px; }
+
+        .auth-container h2 { color: var(--primary); margin-top: 0; margin-bottom: 5px; }
+        .auth-container p { color: #777; font-size: 0.9em; margin-bottom: 25px; }
+
+        .input-group { margin-bottom: 15px; text-align: right; }
+        .input-group label { display: block; margin-bottom: 5px; color: var(--text-dark); font-weight: 500; font-size: 0.9em; }
+        .input-group input {
+            width: 100%; padding: 12px; border: 1px solid #ddd;
+            border-radius: 8px; font-size: 1em; transition: 0.3s;
+        }
+        .input-group input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 5px rgba(26,60,109,0.2); }
+
+        .btn-auth {
+            background-color: var(--primary); color: white;
+            width: 100%; padding: 12px; border: none; border-radius: 8px;
+            font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .btn-auth:hover { background-color: var(--primary-light); }
+
+        .toggle-link {
+            color: var(--primary); text-decoration: none; font-size: 0.9em;
+            cursor: pointer; display: inline-block; margin-top: 15px; font-weight: bold;
+        }
+        .toggle-link:hover { text-decoration: underline; color: var(--accent); }
+
+        #error-msg { color: #e74c3c; font-size: 0.85em; margin-top: 10px; display: none; }
+        
+        .loader { display: none; margin-top: 10px; color: var(--primary); }
+    </style>
 </head>
 <body>
-<div class="wrap">
-  <!-- Header -->
-  <header>
-    <img src="TabukCluster.jpeg" alt="Tabuk Health Cluster"/>
-    <div class="titles">
-      <h1>لوحة تحليل الصيانة — تصحيحية (WO) ووقائية (PPM) ومجمّعة</h1>
-      <div class="credit">تم إعداد المؤشرات عن طريق مدير موقع الفريق المتحرك م. أحمد عادل</div>
+
+    <div class="auth-container">
+        <img src="FGC.jpeg" alt="FGC Logo" class="logo">
+        
+        <div id="loginForm">
+            <h2>تسجيل الدخول</h2>
+            <p>نظام إدارة خطط الإجازات - FGC</p>
+            
+            <div class="input-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" id="loginEmail" placeholder="example@fgc.com" dir="ltr">
+            </div>
+            <div class="input-group">
+                <label>كلمة المرور</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" dir="ltr">
+            </div>
+            
+            <button onclick="login()" class="btn-auth">دخول</button>
+            <p id="loginError" id="error-msg"></p>
+            <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...</div>
+            
+            <span class="toggle-link" onclick="toggleForms()">ليس لديك حساب؟ إنشاء حساب جديد</span>
+        </div>
+
+        <div id="signupForm" style="display: none;">
+            <h2>إنشاء حساب جديد</h2>
+            <p>سجل بياناتك للوصول لنظام الإجازات</p>
+            
+            <div class="input-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" id="signupEmail" placeholder="example@fgc.com" dir="ltr">
+            </div>
+            <div class="input-group">
+                <label>كلمة المرور</label>
+                <input type="password" id="signupPassword" placeholder="••••••••" dir="ltr">
+            </div>
+            <div class="input-group">
+                <label>تأكيد كلمة المرور</label>
+                <input type="password" id="signupConfirm" placeholder="••••••••" dir="ltr">
+            </div>
+            
+            <button onclick="signup()" class="btn-auth">إنشاء الحساب</button>
+            <p id="signupError" id="error-msg"></p>
+            <div class="loader" id="signupLoader"><i class="fa-solid fa-spinner fa-spin"></i> جاري الإنشاء...</div>
+            
+            <span class="toggle-link" onclick="toggleForms()">لديك حساب بالفعل؟ تسجيل الدخول</span>
+        </div>
     </div>
-  </header>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="wo">WO — الصيانة التصحيحية</button>
-    <button class="tab-btn" data-tab="ppm">PPM — الصيانة الوقائية</button>
-    <button class="tab-btn" data-tab="combined">مجمّعة</button>
-  </div>
-
-  <!-- WO TAB -->
-  <section id="tab-wo">
-    <div class="card">
-      <h2>البيانات (WO)</h2>
-      <div class="uploader">
-        <label class="pill">📄 رفع ملف Wo.xlsx
-          <input type="file" id="woFile" accept=".xlsx,.xls"/>
-        </label>
-        <span id="woHint" class="hint">💡 ارفع ملف WO ليتم احتساب كل المؤشرات تلقائيًا.</span>
-      </div>
-      <div class="stats">
-        <div class="stat"><div>إجمالي الأوامر</div><div id="wo-total" class="v">-</div></div>
-        <div class="stat good"><div>الأوامر المنتهية</div><div id="wo-done" class="v">-</div><div id="wo-donep" class="hint"></div></div>
-        <div class="stat warn"><div>تحت الإصلاح</div><div id="wo-pend" class="v">-</div><div id="wo-pendp" class="hint"></div></div>
-        <div class="stat"><div>عدد الفنيين</div><div id="wo-techs" class="v">-</div></div>
-        <div class="stat"><div>Avg Response KPI</div><div id="wo-resp" class="v">-</div><div class="hint">&lt; 1 يوم</div></div>
-        <div class="stat"><div>Avg Repair KPI</div><div id="wo-rep" class="v">-</div><div class="hint">&lt; 5 أيام</div></div>
-      </div>
-      <div class="progress" style="margin-top:8px"><div id="wo-rate" class="fill" style="width:0%"></div></div>
-      <div class="hint" style="text-align:left;margin-top:6px">نسبة الإنجاز</div>
-    </div>
-
-    <div class="card">
-      <h2>الفلاتر</h2>
-      <div class="filters">
-        <select id="wo-tech-filter"><option value="">جميع الفنيين (Assigned To)</option></select>
-        <select id="wo-status-filter">
-          <option value="">جميع الحالات</option>
-          <option value="completed">منتهي</option>
-          <option value="pending">تحت الإصلاح</option>
-        </select>
-        <select id="wo-dept-filter"><option value="">كل المراكز (Department)</option></select>
-      </div>
-    </div>
-
-    <!-- الصف الأول: توزيع + متوسطات -->
-    <div class="row-two">
-      <div class="card"><h2>توزيع الأوامر (منتهي/تحت الإصلاح)</h2><div class="chart-box"><canvas id="wo-status"></canvas></div></div>
-      <div class="card"><h2>متوسط Response/Repair لكل فني</h2><div class="chart-box"><canvas id="wo-bars"></canvas></div></div>
-    </div>
-
-    <!-- الصف الثاني: أجهزة + مراكز -->
-    <div class="row-two">
-      <div class="card"><h2>الأجهزة الأكثر تعطّلًا (WO فقط)</h2><div class="chart-box"><canvas id="wo-devices"></canvas></div></div>
-      <div class="card"><h2>أكثر المراكز الصحية تعطّلًا (Department)</h2><div class="chart-box"><canvas id="wo-depts"></canvas></div></div>
-    </div>
-
-    <div class="card">
-      <h2>جدول أداء الفنيين (WO)</h2>
-      <table id="wo-tech-table">
-        <thead>
-          <tr>
-            <th>الفني</th><th>إجمالي</th><th>منتهي</th><th>تحت الإصلاح</th>
-            <th>Avg Response</th><th>Avg Repair</th><th>التقييم</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div class="card">
-      <h2 id="wo-pending-title">الأوامر تحت الإصلاح</h2>
-      <table id="wo-pending">
-        <thead>
-          <tr><th>رقم</th><th>Assigned To</th><th>Department</th><th>الجهاز</th><th>ملاحظة</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- PPM TAB -->
-  <section id="tab-ppm" class="hidden">
-    <div class="card">
-      <h2>البيانات (PPM)</h2>
-      <div class="uploader">
-        <label class="pill">📄 رفع ملف ppm.xlsx
-          <input type="file" id="ppmFile" accept=".xlsx,.xls"/>
-        </label>
-        <span id="ppmHint" class="hint">💡 ارفع ملف PPM لحساب المؤشرات.</span>
-      </div>
-      <div class="stats">
-        <div class="stat"><div>إجمالي المهام</div><div id="ppm-total" class="v">-</div></div>
-        <div class="stat good"><div>منجز</div><div id="ppm-done" class="v">-</div><div id="ppm-donep" class="hint"></div></div>
-        <div class="stat warn"><div>غير منجز</div><div id="ppm-pend" class="v">-</div><div id="ppm-pendp" class="hint"></div></div>
-        <div class="stat"><div>عدد الفنيين</div><div id="ppm-techs" class="v">-</div></div>
-        <div class="stat"><div>Avg Response KPI</div><div id="ppm-resp" class="v">-</div><div class="hint">&lt; 15 يوم</div></div>
-        <div class="stat"><div>Avg Repair KPI</div><div id="ppm-rep" class="v">-</div><div class="hint">&lt; 30 يوم</div></div>
-      </div>
-      <div class="progress" style="margin-top:8px"><div id="ppm-rate" class="fill" style="width:0%"></div></div>
-      <div class="hint" style="text-align:left;margin-top:6px">نسبة الإنجاز (PPM)</div>
-    </div>
-
-    <div class="card">
-      <h2>الفلاتر</h2>
-      <div class="filters">
-        <select id="ppm-tech-filter"><option value="">جميع الفنيين (Assigned To)</option></select>
-        <select id="ppm-status-filter">
-          <option value="">جميع الحالات</option>
-          <option value="completed">منجز</option>
-          <option value="pending">غير منجز</option>
-        </select>
-        <select id="ppm-dept-filter"><option value="">كل المراكز (Department)</option></select>
-      </div>
-    </div>
-
-    <div class="row-two">
-      <div class="card"><h2>توزيع الحالات (منجز/غير منجز)</h2><div class="chart-box"><canvas id="ppm-status"></canvas></div></div>
-      <div class="card"><h2>متوسط Response/Repair لكل فني</h2><div class="chart-box"><canvas id="ppm-bars"></canvas></div></div>
-    </div>
-
-    <div class="card">
-      <h2>المراكز الصحية (Department)</h2>
-      <div class="chart-box"><canvas id="ppm-depts"></canvas></div>
-    </div>
-
-    <div class="card">
-      <h2>جدول أداء الفنيين (PPM)</h2>
-      <table id="ppm-tech-table">
-        <thead>
-          <tr>
-            <th>الفني</th><th>إجمالي</th><th>منجز</th><th>غير منجز</th>
-            <th>Avg Response</th><th>Avg Repair</th><th>التقييم</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div class="card">
-      <h2 id="ppm-pending-title">المهام غير المنجزة</h2>
-      <table id="ppm-pending">
-        <thead>
-          <tr><th>رقم</th><th>Assigned To</th><th>Department</th><th>الجهاز</th><th>ملاحظة</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- COMBINED TAB -->
-  <section id="tab-combined" class="hidden">
-    <div class="card">
-      <h2>جدول مجمّع (WO + PPM)</h2>
-      <div class="hint" style="margin-bottom:8px">الفرز: نسبة الإنجاز ↓ ، ثم Avg Repair ↑ ، ثم Avg Response ↑ ، ثم إجمالي الأوامر ↓</div>
-      <table id="combined-table">
-        <thead>
-          <tr>
-            <th>الفني</th>
-            <th>إجمالي الأوامر (WO+PPM)</th>
-            <th>نسبة الإنجاز مجمّع</th>
-            <th>Avg Repair (WO+PPM)</th>
-            <th>Avg Response (WO+PPM)</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div class="hint" id="combined-hint" style="margin-top:8px"></div>
-    </div>
-  </section>
-
-  <footer>لوحة تحليل الصيانة — Tabuk Health Cluster • 2025</footer>
-</div>
 
 <script>
-/* ===== Utilities & Aliases ===== */
-const isEmptyDate = (v) => v==null || String(v).trim()==='';
-const toNum = (v)=>{ if(v==null||v==='') return null; const n=Number(String(v).replace(',','.')); return isNaN(n)? null : n; };
-const pick = (row, candidates)=>{
-  const map=Object.fromEntries(Object.keys(row).map(k=>[k.toLowerCase().trim(),k]));
-  for(const c of candidates){ const key=Object.keys(map).find(x=>x===c || x.includes(c)); if(key) return map[key]; }
-  return null;
-};
+    // نفس بيانات قاعدة بيانات FGC
+    const firebaseConfig = { 
+        apiKey: "AIzaSyCHZsLreB9fd8fkjnj87miAPDrZsKMOrDI", 
+        authDomain: "fgcbio.firebaseapp.com", 
+        projectId: "fgcbio", 
+        storageBucket: "fgcbio.firebasestorage.app", 
+        messagingSenderId: "924334872806", 
+        appId: "1:924334872806:web:fac89ce388b1ff2de24327" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-const COL = {
-  assigned: ['assigned to','technician','الفني'],
-  respKPI:  ['respose kpi','response kpi','response','avg response'],
-  repKPI:   ['repierd kpi','repaired kpi','repair kpi','repair','avg repair'],
-  signoff:  ['sign off date','sign-off date','sign off','تاريخ الإغلاق','تاريخ الاقفال','signoff'],
-  dept:     ['department','القسم','site/department','site','الموقع'],
-  device:   ['device','equipment','الجهاز','ecri','equipment name','asset']
-};
+    // التبديل بين النموذجين
+    function toggleForms() {
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        
+        if(loginForm.style.display === 'none') {
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+        } else {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        }
+    }
 
-async function parseExcel(file){
-  return new Promise((resolve,reject)=>{
-    const r=new FileReader();
-    r.onload=(e)=>{ resolve(parseExcelBuffer(e.target.result)); };
-    r.onerror=reject;
-    r.readAsArrayBuffer(file);
-  });
-}
-
-// قراءة من ArrayBuffer مباشرة (للاوتوماتيك)
-async function parseExcelBuffer(arrayBuffer){
-  const wb=XLSX.read(new Uint8Array(arrayBuffer),{type:'array'});
-  const ws=wb.Sheets[wb.SheetNames[0]];
-  const arr=XLSX.utils.sheet_to_json(ws,{defval:''});
-  if(!arr.length) return [];
-  const c={
-    assigned: pick(arr[0], COL.assigned),
-    respKPI:  pick(arr[0], COL.respKPI),
-    repKPI:   pick(arr[0], COL.repKPI),
-    signoff:  pick(arr[0], COL.signoff),
-    dept:     pick(arr[0], COL.dept),
-    device:   pick(arr[0], COL.device)
-  };
-  return arr.map((r,i)=>({
-    idx:i+1,
-    assigned:c.assigned? r[c.assigned]:'غير محدد',
-    resp:    c.respKPI ? toNum(r[c.respKPI]) : null,
-    rep:     c.repKPI  ? toNum(r[c.repKPI])  : null,
-    status:  c.signoff ? (isEmptyDate(r[c.signoff])?'pending':'completed') : (r['status']?.toLowerCase?.().includes('comp')?'completed':'pending'),
-    dept:    c.dept? r[c.dept]:'غير محدد',
-    device:  c.device? r[c.device]:'غير معروف'
-  }));
-}
-
-function avg(arr){ return arr.length? +(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2) : null; }
-
-/* ===== Targets Coloring ===== */
-function colorByTarget(val, target){
-  if(val==null) return {text:'-', cls:''};
-  if(val < target.ok)   return {text:val, cls:'b-ok'};
-  if(val < target.warn) return {text:val, cls:'b-warn'};
-  return {text:val, cls:'b-bad'};
-}
-const TARGETS = {
-  WO:   { response:{ok:1,  warn:1},  repair:{ok:5,  warn:5}  }, // <1 / <5
-  PPM:  { response:{ok:15, warn:15}, repair:{ok:30, warn:30} }  // <15 / <30
-};
-
-/* ===== Aggregation (generic) ===== */
-function aggregate(rows, filters){
-  const fTech=filters.tech||'', fStatus=filters.status||'', fDept=filters.dept||'';
-  const filtered=rows.filter(r=>{
-    const okT=!fTech || String(r.assigned)===fTech;
-    const okS=!fStatus || r.status===fStatus;
-    const okD=!fDept || String(r.dept)===fDept;
-    return okT&&okS&&okD;
-  });
-  // by tech
-  const tmap=new Map();
-  filtered.forEach(r=>{
-    if(!tmap.has(r.assigned)) tmap.set(r.assigned,{name:r.assigned,total:0,done:0,pend:0,rs:[],rp:[]});
-    const t=tmap.get(r.assigned);
-    t.total++; (r.status==='completed')? t.done++ : t.pend++;
-    if(r.resp!=null) t.rs.push(r.resp);
-    if(r.rep!=null)  t.rp.push(r.rep);
-  });
-  const byTech=Array.from(tmap.values()).map(t=>({
-    name:t.name,total:t.total,done:t.done,pend:t.pend,
-    resp:avg(t.rs), rep:avg(t.rp)
-  })).sort((a,b)=> b.total-a.total);
-
-  // by device
-  const devMap=new Map();
-  filtered.forEach(r=> devMap.set(r.device,(devMap.get(r.device)||0)+1));
-  const byDevice=Array.from(devMap.entries()).map(([name,count])=>({name,count}))
-                      .sort((a,b)=> b.count-a.count).slice(0,15);
-
-  // by dept
-  const dmap=new Map();
-  filtered.forEach(r=> dmap.set(r.dept,(dmap.get(r.dept)||0)+1));
-  const byDept=Array.from(dmap.entries()).map(([name,count])=>({name,count}))
-                    .sort((a,b)=> b.count-a.count).slice(0,15);
-
-  const total=filtered.length, done=filtered.filter(r=>r.status==='completed').length;
-  const pend=total-done, rate= total? Math.round(done*1000/total)/10 : 0;
-
-  const pendingRows=filtered.filter(r=>r.status==='pending');
-  const techs=Array.from(new Set(rows.map(r=>r.assigned))).sort((a,b)=> a.localeCompare(b,'ar'));
-  const depts=Array.from(new Set(rows.map(r=>r.dept))).sort((a,b)=> a.localeCompare(b,'ar'));
-  return {filtered,byTech,byDevice,byDept,total,done,pend,rate,pendingRows,techs,depts};
-}
-
-/* ===== Charts helpers ===== */
-const charts={};
-function drawDoughnut(id,labels,data){
-  if(charts[id]) charts[id].destroy();
-  charts[id]=new Chart(document.getElementById(id).getContext('2d'),{
-    type:'doughnut',
-    data:{labels,datasets:[{data,borderWidth:1,backgroundColor:['#28a745','#ffc107','#36b9cc','#4e73df','#e74a3b']}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',rtl:true}}}
-  });
-}
-function drawBars(id,labels,ds){
-  if(charts[id]) charts[id].destroy();
-  charts[id]=new Chart(document.getElementById(id).getContext('2d'),{
-    type:'bar',
-    data:{labels,datasets:ds},
-    options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}
-  });
-}
-
-/* ===== WO state ===== */
-let WO_ROWS=[];
-function refreshWO(){
-  const filters={tech:woTech.value,status:woStatus.value,dept:woDept.value};
-  const A=aggregate(WO_ROWS,filters);
-
-  // Fill selects once
-  if(woTech.options.length<=1) A.techs.forEach(t=> woTech.insertAdjacentHTML('beforeend',`<option>${t}</option>`));
-  if(woDept.options.length<=1) A.depts.forEach(d=> woDept.insertAdjacentHTML('beforeend',`<option>${d}</option>`));
-
-  woTotal.textContent=A.total; woDone.textContent=A.done; woPend.textContent=A.pend;
-  woDoneP.textContent=`${A.rate}% من الإجمالي`; woPendP.textContent=`${(100-A.rate).toFixed(1)}% من الإجمالي`;
-  woTechs.textContent=new Set(A.filtered.map(r=>r.assigned)).size;
-  woRate.style.width=`${A.rate}%`;
-
-  const respAll=A.filtered.map(r=>r.resp).filter(x=>x!=null);
-  const repAll=A.filtered.map(r=>r.rep).filter(x=>x!=null);
-  const respAvg=avg(respAll)||0, repAvg=avg(repAll)||0;
-  const rCol=colorByTarget(respAvg, TARGETS.WO.response);
-  const fCol=colorByTarget(repAvg,  TARGETS.WO.repair);
-  woResp.innerHTML=`<span class="badge ${rCol.cls}">${rCol.text}</span>`;
-  woRep.innerHTML =`<span class="badge ${fCol.cls}">${fCol.text}</span>`;
-
-  drawDoughnut('wo-status',[`منتهي (${A.done})`,`تحت الإصلاح (${A.pend})`],[A.done,A.pend]);
-  drawBars('wo-bars', A.byTech.map(t=>t.name), [
-    {label:'Avg Response', data:A.byTech.map(t=>t.resp??0), borderWidth:1, backgroundColor:'rgba(54,162,235,.7)'},
-    {label:'Avg Repair',   data:A.byTech.map(t=>t.rep??0),  borderWidth:1, backgroundColor:'rgba(255,99,132,.7)'}
-  ]);
-  drawDoughnut('wo-devices', A.byDevice.map(d=>d.name), A.byDevice.map(d=>d.count));
-  drawBars('wo-depts', A.byDept.map(d=>d.name), [{label:'WO count', data:A.byDept.map(d=>d.count), borderWidth:1, backgroundColor:'rgba(75,192,192,.7)'}]);
-
-  const tb=document.querySelector('#wo-tech-table tbody'); tb.innerHTML='';
-  A.byTech.forEach(t=>{
-    const rCol=colorByTarget(t.resp, TARGETS.WO.response);
-    const fCol=colorByTarget(t.rep,  TARGETS.WO.repair);
-    tb.insertAdjacentHTML('beforeend',`
-      <tr>
-        <td>${t.name}</td><td>${t.total}</td><td>${t.done}</td><td>${t.pend}</td>
-        <td><span class="badge ${rCol.cls}">${rCol.text}</span></td>
-        <td><span class="badge ${fCol.cls}">${fCol.text}</span></td>
-        <td>${rankBadge(t.resp,t.rep)}</td>
-      </tr>`);
-  });
-
-  const pb=document.querySelector('#wo-pending tbody'); pb.innerHTML='';
-  document.getElementById('wo-pending-title').textContent=`الأوامر تحت الإصلاح (${A.pend})`;
-  A.pendingRows.forEach(r=>{
-    pb.insertAdjacentHTML('beforeend',`<tr><td>${r.idx}</td><td>${r.assigned}</td><td>${r.dept}</td><td>${r.device}</td><td>Sign-off فارغ</td></tr>`);
-  });
-
-  refreshCombinedHint(); // لتوضيح حالة الدمج
-}
-
-function rankBadge(resp,rep){
-  const r=resp??9e9, f=rep??9e9;
-  if(r<1 && f<5) return '<span class="badge b-ok">ممتاز</span>';
-  if(r<2.5 && f<3.5) return '<span class="badge b-ok">جيد جداً</span>';
-  if(r<3.5 && f<5) return '<span class="badge b-warn">متوسط</span>';
-  if(r<5.5 && f<7.5) return '<span class="badge b-warn">يحتاج تحسين</span>';
-  return '<span class="badge b-bad">ضعيف</span>';
-}
-
-/* ===== PPM state ===== */
-let PPM_ROWS=[];
-function refreshPPM(){
-  const filters={tech:ppmTech.value,status:ppmStatus.value,dept:ppmDept.value};
-  const A=aggregate(PPM_ROWS,filters);
-
-  if(ppmTech.options.length<=1) A.techs.forEach(t=> ppmTech.insertAdjacentHTML('beforeend',`<option>${t}</option>`));
-  if(ppmDept.options.length<=1) A.depts.forEach(d=> ppmDept.insertAdjacentHTML('beforeend',`<option>${d}</option>`));
-
-  ppmTotal.textContent=A.total; ppmDone.textContent=A.done; ppmPend.textContent=A.pend;
-  ppmDoneP.textContent=`${A.rate}% من الإجمالي`; ppmPendP.textContent=`${(100-A.rate).toFixed(1)}% من الإجمالي`;
-  ppmTechs.textContent=new Set(A.filtered.map(r=>r.assigned)).size;
-  ppmRate.style.width=`${A.rate}%`;
-
-  const respAll=A.filtered.map(r=>r.resp).filter(x=>x!=null);
-  const repAll=A.filtered.map(r=>r.rep).filter(x=>x!=null);
-  const respAvg=avg(respAll)||0, repAvg=avg(repAll)||0;
-  const rCol=colorByTarget(respAvg, TARGETS.PPM.response);
-  const fCol=colorByTarget(repAvg,  TARGETS.PPM.repair);
-  ppmResp.innerHTML=`<span class="badge ${rCol.cls}">${rCol.text}</span>`;
-  ppmRep.innerHTML =`<span class="badge ${fCol.cls}">${fCol.text}</span>`;
-
-  drawDoughnut('ppm-status',[`منجز (${A.done})`,`غير منجز (${A.pend})`],[A.done,A.pend]);
-  drawBars('ppm-bars', A.byTech.map(t=>t.name), [
-    {label:'Avg Response', data:A.byTech.map(t=>t.resp??0), borderWidth:1, backgroundColor:'rgba(54,162,235,.7)'},
-    {label:'Avg Repair',   data:A.byTech.map(t=>t.rep??0),  borderWidth:1, backgroundColor:'rgba(255,159,64,.7)'}
-  ]);
-  drawBars('ppm-depts', A.byDept.map(d=>d.name), [{label:'PPM count', data:A.byDept.map(d=>d.count), borderWidth:1, backgroundColor:'rgba(75,192,192,.7)'}]);
-
-  const tb=document.querySelector('#ppm-tech-table tbody'); tb.innerHTML='';
-  A.byTech.forEach(t=>{
-    const rCol=colorByTarget(t.resp, TARGETS.PPM.response);
-    const fCol=colorByTarget(t.rep,  TARGETS.PPM.repair);
-    tb.insertAdjacentHTML('beforeend',`
-      <tr>
-        <td>${t.name}</td><td>${t.total}</td><td>${t.done}</td><td>${t.pend}</td>
-        <td><span class="badge ${rCol.cls}">${rCol.text}</span></td>
-        <td><span class="badge ${fCol.cls}">${fCol.text}</span></td>
-        <td>${rankBadgePPM(t.resp,t.rep)}</td>
-      </tr>`);
-  });
-
-  const pb=document.querySelector('#ppm-pending tbody'); pb.innerHTML='';
-  document.getElementById('ppm-pending-title').textContent=`غير المنجزة (${A.pend})`;
-  A.pendingRows.forEach(r=>{
-    pb.insertAdjacentHTML('beforeend',`<tr><td>${r.idx}</td><td>${r.assigned}</td><td>${r.dept}</td><td>${r.device}</td><td>Sign-off فارغ</td></tr>`);
-  });
-
-  refreshCombinedHint();
-}
-
-function rankBadgePPM(resp,rep){
-  const r=resp??9e9, f=rep??9e9;
-  if(r<15 && f<30) return '<span class="badge b-ok">ضمن الهدف</span>';
-  if(r<20 && f<40) return '<span class="badge b-warn">قريب من الهدف</span>';
-  return '<span class="badge b-bad">بعيد عن الهدف</span>';
-}
-
-/* ===== Combined ===== */
-function buildCombined(){
-  const map=new Map();
-  function ingest(rows){
-    rows.forEach(r=>{
-      if(!map.has(r.assigned)) map.set(r.assigned,{name:r.assigned,total:0,done:0,rs:[],rp:[]});
-      const t=map.get(r.assigned);
-      t.total++;
-      if(r.status==='completed') t.done++;
-      if(r.resp!=null) t.rs.push(r.resp);
-      if(r.rep!=null)  t.rp.push(r.rep);
+    // التحقق التلقائي إذا كان مسجلاً للدخول مسبقاً
+    auth.onAuthStateChanged(async user => {
+        if(user) {
+            routeUser(user.uid);
+        }
     });
-  }
-  ingest(WO_ROWS);
-  ingest(PPM_ROWS);
 
-  const list=Array.from(map.values()).map(t=>({
-    name:t.name,
-    total:t.total,
-    rate: t.total? +(t.done*100/t.total).toFixed(1) : 0,
-    avgRepair: avg(t.rp) ?? null,
-    avgResp:   avg(t.rs) ?? null
-  }));
+    // توجيه المستخدم حسب صلاحياته
+    async function routeUser(uid) {
+        try {
+            const doc = await db.collection('users').doc(uid).get();
+            if(doc.exists && doc.data().role === 'admin') {
+                window.location.href = "admin.html";
+            } else {
+                window.location.href = "user.html";
+            }
+        } catch (e) {
+            console.error(e);
+            window.location.href = "user.html"; // افتراضي
+        }
+    }
 
-  // الفرز: إنجاز ↓ ، إصلاح ↑ ، استجابة ↑ ، إجمالي ↓
-  list.sort((a,b)=>{
-    if(b.rate!==a.rate) return b.rate - a.rate;
-    if((a.avgRepair??1e9)!==(b.avgRepair??1e9)) return (a.avgRepair??1e9) - (b.avgRepair??1e9);
-    if((a.avgResp??1e9)!==(b.avgResp??1e9))     return (a.avgResp??1e9)   - (b.avgResp??1e9);
-    return (b.total - a.total);
-  });
+    // دالة تسجيل الدخول
+    async function login() {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        const err = document.getElementById('loginError');
+        const loader = document.getElementById('loginLoader');
 
-  const tb=document.querySelector('#combined-table tbody'); tb.innerHTML='';
-  list.forEach(t=>{
-    const rBadge = `<span class="badge ${t.avgRepair!=null ? (t.avgRepair<5?'b-ok':'b-bad') : ''}">${t.avgRepair ?? '-'}</span>`;
-    const sBadge = `<span class="badge ${t.avgResp!=null   ? (t.avgResp  <1?'b-ok':'b-bad')   : ''}">${t.avgResp ?? '-'}</span>`;
-    tb.insertAdjacentHTML('beforeend',`
-      <tr>
-        <td>${t.name}</td>
-        <td>${t.total}</td>
-        <td>${t.rate}%</td>
-        <td>${rBadge}</td>
-        <td>${sBadge}</td>
-      </tr>`);
-  });
-}
+        if(!email || !pass) { err.style.display = 'block'; err.innerText = "يرجى تعبئة جميع الحقول"; return; }
+        
+        err.style.display = 'none';
+        loader.style.display = 'block';
+        
+        try {
+            const userCredential = await auth.signInWithEmailAndPassword(email, pass);
+            routeUser(userCredential.user.uid);
+        } catch (e) {
+            loader.style.display = 'none';
+            err.style.display = 'block';
+            err.innerText = "خطأ في تسجيل الدخول. تأكد من الإيميل وكلمة المرور.";
+        }
+    }
 
-function refreshCombinedHint(){
-  const hint=document.getElementById('combined-hint');
-  if(!WO_ROWS.length && !PPM_ROWS.length) hint.textContent='لم يتم رفع ملفات بعد.';
-  else if(WO_ROWS.length && !PPM_ROWS.length) hint.textContent='تم التجميع بناءً على WO فقط (لم يتم رفع PPM).';
-  else if(!WO_ROWS.length && PPM_ROWS.length) hint.textContent='تم التجميع بناءً على PPM فقط (لم يتم رفع WO).';
-  else hint.textContent='تم التجميع من WO و PPM.';
-}
+    // دالة إنشاء الحساب
+    async function signup() {
+        const email = document.getElementById('signupEmail').value;
+        const pass = document.getElementById('signupPassword').value;
+        const confirm = document.getElementById('signupConfirm').value;
+        const err = document.getElementById('signupError');
+        const loader = document.getElementById('signupLoader');
 
-/* ===== Auto-load from repo (data/Wo.xlsx & data/ppm.xlsx) ===== */
-async function tryAutoLoadExcel(path){
-  try{
-    const res = await fetch(path, { cache: 'no-store' });
-    if(!res.ok) return null;
-    const buf = await res.arrayBuffer();
-    return parseExcelBuffer(buf);
-  }catch(e){ return null; }
-}
+        if(!email || !pass || !confirm) { err.style.display = 'block'; err.innerText = "يرجى تعبئة جميع الحقول"; return; }
+        if(pass !== confirm) { err.style.display = 'block'; err.innerText = "كلمات المرور غير متطابقة"; return; }
+        if(pass.length < 6) { err.style.display = 'block'; err.innerText = "كلمة المرور يجب أن تكون 6 أحرف على الأقل"; return; }
 
-async function autoInitFromRepo(){
-  const wo = await tryAutoLoadExcel('data/Wo.xlsx');
-  if(wo && Array.isArray(wo) && wo.length){
-    WO_ROWS = wo;
-    document.getElementById('woHint').textContent = '✔ تم التحميل تلقائيًا من data/Wo.xlsx';
-    document.getElementById('wo-tech-filter').innerHTML = '<option value="">جميع الفنيين (Assigned To)</option>';
-    document.getElementById('wo-dept-filter').innerHTML = '<option value="">كل المراكز (Department)</option>';
-    refreshWO();
-  }
+        err.style.display = 'none';
+        loader.style.display = 'block';
 
-  const ppm = await tryAutoLoadExcel('data/ppm.xlsx');
-  if(ppm && Array.isArray(ppm) && ppm.length){
-    PPM_ROWS = ppm;
-    document.getElementById('ppmHint').textContent = '✔ تم التحميل تلقائيًا من data/ppm.xlsx';
-    document.getElementById('ppm-tech-filter').innerHTML = '<option value="">جميع الفنيين (Assigned To)</option>';
-    document.getElementById('ppm-dept-filter').innerHTML = '<option value="">كل المراكز (Department)</option>';
-    refreshPPM();
-  }
-
-  refreshCombinedHint();
-}
-
-/* ===== Wiring ===== */
-const woTech=document.getElementById('wo-tech-filter');
-const woStatus=document.getElementById('wo-status-filter');
-const woDept=document.getElementById('wo-dept-filter');
-
-const ppmTech=document.getElementById('ppm-tech-filter');
-const ppmStatus=document.getElementById('ppm-status-filter');
-const ppmDept=document.getElementById('ppm-dept-filter');
-
-const woTotal=document.getElementById('wo-total');
-const woDone=document.getElementById('wo-done');
-const woPend=document.getElementById('wo-pend');
-const woDoneP=document.getElementById('wo-donep');
-const woPendP=document.getElementById('wo-pendp');
-const woTechs=document.getElementById('wo-techs');
-const woResp=document.getElementById('wo-resp');
-const woRep=document.getElementById('wo-rep');
-const woRate=document.getElementById('wo-rate');
-
-const ppmTotal=document.getElementById('ppm-total');
-const ppmDone=document.getElementById('ppm-done');
-const ppmPend=document.getElementById('ppm-pend');
-const ppmDoneP=document.getElementById('ppm-donep');
-const ppmPendP=document.getElementById('ppm-pendp');
-const ppmTechs=document.getElementById('ppm-techs');
-const ppmResp=document.getElementById('ppm-resp');
-const ppmRep=document.getElementById('ppm-rep');
-const ppmRate=document.getElementById('ppm-rate');
-
-// Tabs switching
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const tab=btn.dataset.tab;
-    document.getElementById('tab-wo').classList.toggle('hidden', tab!=='wo');
-    document.getElementById('tab-ppm').classList.toggle('hidden', tab!=='ppm');
-    document.getElementById('tab-combined').classList.toggle('hidden', tab!=='combined');
-    if(tab==='combined') buildCombined();
-  });
-});
-
-['wo-tech-filter','wo-status-filter','wo-dept-filter'].forEach(id=> document.getElementById(id).addEventListener('change', refreshWO));
-['ppm-tech-filter','ppm-status-filter','ppm-dept-filter'].forEach(id=> document.getElementById(id).addEventListener('change', refreshPPM));
-
-document.getElementById('woFile').addEventListener('change', async (e)=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  WO_ROWS=await parseExcel(f);
-  document.getElementById('woHint').textContent=`✔ تم تحميل: ${f.name}`;
-  woTech.innerHTML='<option value="">جميع الفنيين (Assigned To)</option>';
-  woDept.innerHTML='<option value="">كل المراكز (Department)</option>';
-  refreshWO();
-});
-
-document.getElementById('ppmFile').addEventListener('change', async (e)=>{
-  const f=e.target.files?.[0]; if(!f) return;
-  PPM_ROWS=await parseExcel(f);
-  document.getElementById('ppmHint').textContent=`✔ تم تحميل: ${f.name}`;
-  ppmTech.innerHTML='<option value="">جميع الفنيين (Assigned To)</option>';
-  ppmDept.innerHTML='<option value="">كل المراكز (Department)</option>';
-  refreshPPM();
-});
-
-// تشغيل التحميل التلقائي عند فتح الصفحة (GitHub Pages)
-window.addEventListener('DOMContentLoaded', autoInitFromRepo);
+        try {
+            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+            // حفظ بيانات المستخدم الجديد في قاعدة البيانات بصلاحية افتراضية "user"
+            await db.collection('users').doc(userCredential.user.uid).set({
+                email: email,
+                role: 'user',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            window.location.href = "user.html";
+        } catch (e) {
+            loader.style.display = 'none';
+            err.style.display = 'block';
+            err.innerText = "خطأ أثناء إنشاء الحساب: " + e.message;
+        }
+    }
 </script>
 </body>
 </html>
