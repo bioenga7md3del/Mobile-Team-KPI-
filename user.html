@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة تحكم مدير الموقع</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<nav class="navbar"><h2><img src="FGC.jpeg" style="height:30px"> نظام الإجازات - الموظفين</h2><button onclick="auth.signOut()">خروج</button></nav>
+<div class="container">
+    <div class="card">
+        <h3>تقديم طلب إجازة جديد</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <input type="text" id="name" placeholder="اسم الموظف">
+            <input type="number" id="id" placeholder="الرقم الوظيفي">
+            <input type="date" id="start">
+            <input type="date" id="end">
+            <input type="text" id="site" placeholder="الموقع">
+        </div>
+        <button onclick="saveVacation()" class="btn btn-primary" style="margin-top:10px;">إرسال للادارة</button>
+    </div>
+    <div class="card">
+        <h3>طلباتي السابقة</h3>
+        <table id="userVacTable"><thead><tr><th>الموظف</th><th>البداية</th><th>النهاية</th><th>الحالة</th></tr></thead><tbody id="userVacBody"></tbody></table>
+    </div>
+</div>
+<script>
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    auth.onAuthStateChanged(user => { if(!user) window.location.href="index.html"; loadUserVacations(user.email); });
+
+    async function saveVacation() {
+        await db.collection("vacations").add({
+            empName: document.getElementById('name').value,
+            empId: document.getElementById('id').value,
+            startDate: document.getElementById('start').value,
+            endDate: document.getElementById('end').value,
+            siteName: document.getElementById('site').value,
+            status: 'pending',
+            createdAt: new Date()
+        });
+        alert("تم الإرسال!");
+    }
+
+    function loadUserVacations(email) {
+        db.collection("vacations").where("createdBy", "==", email).onSnapshot(snap => {
+            const tbody = document.getElementById('userVacBody');
+            tbody.innerHTML = "";
+            snap.forEach(doc => {
+                const v = doc.data();
+                tbody.innerHTML += `<tr><td>${v.empName}</td><td>${v.startDate}</td><td>${v.endDate}</td><td>${v.status}</td></tr>`;
+            });
+        });
+    }
+</script>
+</body>
+</html>
