@@ -13,62 +13,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
-        :root {
-            --primary: #1a3c6d;
-            --primary-light: #2c5aa0;
-            --accent: #e67e22;
-            --bg-color: #f4f7f6;
-            --text-dark: #333;
-        }
-
-        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--bg-color);
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh;
-        }
-
-        .auth-container {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 100%; max-width: 400px;
-            text-align: center;
-            border-top: 5px solid var(--primary);
-        }
-
+        :root { --primary: #1a3c6d; --accent: #e67e22; --bg-color: #f4f7f6; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .auth-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
         .logo { max-width: 120px; margin-bottom: 20px; }
-
-        .auth-container h2 { color: var(--primary); margin-top: 0; margin-bottom: 5px; }
-        .auth-container p { color: #777; font-size: 0.9em; margin-bottom: 25px; }
-
         .input-group { margin-bottom: 15px; text-align: right; }
-        .input-group label { display: block; margin-bottom: 5px; color: var(--text-dark); font-weight: 500; font-size: 0.9em; }
-        .input-group input {
-            width: 100%; padding: 12px; border: 1px solid #ddd;
-            border-radius: 8px; font-size: 1em; transition: 0.3s;
-        }
-        .input-group input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 5px rgba(26,60,109,0.2); }
-
-        .btn-auth {
-            background-color: var(--primary); color: white;
-            width: 100%; padding: 12px; border: none; border-radius: 8px;
-            font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px;
-        }
-        .btn-auth:hover { background-color: var(--primary-light); }
-
-        .toggle-link {
-            color: var(--primary); text-decoration: none; font-size: 0.9em;
-            cursor: pointer; display: inline-block; margin-top: 15px; font-weight: bold;
-        }
-        .toggle-link:hover { text-decoration: underline; color: var(--accent); }
-
-        #error-msg { color: #e74c3c; font-size: 0.85em; margin-top: 10px; display: none; }
-        
-        .loader { display: none; margin-top: 10px; color: var(--primary); }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-auth { background-color: var(--primary); color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .toggle-link { color: var(--primary); cursor: pointer; display: block; margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -78,150 +30,68 @@
         
         <div id="loginForm">
             <h2>تسجيل الدخول</h2>
-            <p>نظام إدارة خطط الإجازات - FGC</p>
-            
-            <div class="input-group">
-                <label>البريد الإلكتروني</label>
-                <input type="email" id="loginEmail" placeholder="example@fgc.com" dir="ltr">
-            </div>
-            <div class="input-group">
-                <label>كلمة المرور</label>
-                <input type="password" id="loginPassword" placeholder="••••••••" dir="ltr">
-            </div>
-            
+            <div class="input-group"><input type="email" id="loginEmail" placeholder="البريد الإلكتروني" dir="ltr"></div>
+            <div class="input-group"><input type="password" id="loginPassword" placeholder="كلمة المرور" dir="ltr"></div>
             <button onclick="login()" class="btn-auth">دخول</button>
-            <p id="loginError" id="error-msg"></p>
-            <div class="loader" id="loginLoader"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...</div>
-            
             <span class="toggle-link" onclick="toggleForms()">ليس لديك حساب؟ إنشاء حساب جديد</span>
         </div>
 
         <div id="signupForm" style="display: none;">
             <h2>إنشاء حساب جديد</h2>
-            <p>سجل بياناتك للوصول لنظام الإجازات</p>
-            
-            <div class="input-group">
-                <label>البريد الإلكتروني</label>
-                <input type="email" id="signupEmail" placeholder="example@fgc.com" dir="ltr">
-            </div>
-            <div class="input-group">
-                <label>كلمة المرور</label>
-                <input type="password" id="signupPassword" placeholder="••••••••" dir="ltr">
-            </div>
-            <div class="input-group">
-                <label>تأكيد كلمة المرور</label>
-                <input type="password" id="signupConfirm" placeholder="••••••••" dir="ltr">
-            </div>
-            
+            <div class="input-group"><input type="email" id="signupEmail" placeholder="البريد الإلكتروني" dir="ltr"></div>
+            <div class="input-group"><input type="password" id="signupPassword" placeholder="كلمة المرور" dir="ltr"></div>
             <button onclick="signup()" class="btn-auth">إنشاء الحساب</button>
-            <p id="signupError" id="error-msg"></p>
-            <div class="loader" id="signupLoader"><i class="fa-solid fa-spinner fa-spin"></i> جاري الإنشاء...</div>
-            
             <span class="toggle-link" onclick="toggleForms()">لديك حساب بالفعل؟ تسجيل الدخول</span>
         </div>
     </div>
 
 <script>
-    // نفس بيانات قاعدة بيانات FGC
-    const firebaseConfig = { 
-        apiKey: "AIzaSyCHZsLreB9fd8fkjnj87miAPDrZsKMOrDI", 
-        authDomain: "fgcbio.firebaseapp.com", 
-        projectId: "fgcbio", 
-        storageBucket: "fgcbio.firebasestorage.app", 
-        messagingSenderId: "924334872806", 
-        appId: "1:924334872806:web:fac89ce388b1ff2de24327" 
+    // الإعدادات التي أرسلتها أنت
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5Dh7bJzPqLaZl4djKCgpzaHHSeeD1aHU",
+        authDomain: "phaseten-435bf.firebaseapp.com",
+        projectId: "phaseten-435bf",
+        storageBucket: "phaseten-435bf.firebasestorage.app",
+        messagingSenderId: "780298483879",
+        appId: "1:780298483879:web:6b6627e673d4808e098382",
+        measurementId: "G-58E5DVZHZ6"
     };
+    
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // التبديل بين النموذجين
     function toggleForms() {
-        const loginForm = document.getElementById('loginForm');
-        const signupForm = document.getElementById('signupForm');
-        
-        if(loginForm.style.display === 'none') {
-            loginForm.style.display = 'block';
-            signupForm.style.display = 'none';
-        } else {
-            loginForm.style.display = 'none';
-            signupForm.style.display = 'block';
-        }
+        document.getElementById('loginForm').style.display = document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
+        document.getElementById('signupForm').style.display = document.getElementById('signupForm').style.display === 'none' ? 'block' : 'none';
     }
 
-    // التحقق التلقائي إذا كان مسجلاً للدخول مسبقاً
-    auth.onAuthStateChanged(async user => {
-        if(user) {
-            routeUser(user.uid);
-        }
-    });
+    // التحقق التلقائي
+    auth.onAuthStateChanged(user => { if(user) routeUser(user.uid); });
 
-    // توجيه المستخدم حسب صلاحياته
     async function routeUser(uid) {
-        try {
-            const doc = await db.collection('users').doc(uid).get();
-            if(doc.exists && doc.data().role === 'admin') {
-                window.location.href = "admin.html";
-            } else {
-                window.location.href = "user.html";
-            }
-        } catch (e) {
-            console.error(e);
-            window.location.href = "user.html"; // افتراضي
-        }
+        const doc = await db.collection('users').doc(uid).get();
+        if(doc.exists && doc.data().role === 'admin') window.location.href = "admin.html";
+        else window.location.href = "user.html";
     }
 
-    // دالة تسجيل الدخول
     async function login() {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPassword').value;
-        const err = document.getElementById('loginError');
-        const loader = document.getElementById('loginLoader');
-
-        if(!email || !pass) { err.style.display = 'block'; err.innerText = "يرجى تعبئة جميع الحقول"; return; }
-        
-        err.style.display = 'none';
-        loader.style.display = 'block';
-        
         try {
-            const userCredential = await auth.signInWithEmailAndPassword(email, pass);
-            routeUser(userCredential.user.uid);
-        } catch (e) {
-            loader.style.display = 'none';
-            err.style.display = 'block';
-            err.innerText = "خطأ في تسجيل الدخول. تأكد من الإيميل وكلمة المرور.";
-        }
+            const e = document.getElementById('loginEmail').value;
+            const p = document.getElementById('loginPassword').value;
+            const cred = await auth.signInWithEmailAndPassword(e, p);
+            routeUser(cred.user.uid);
+        } catch (e) { alert("خطأ في الدخول: " + e.message); }
     }
 
-    // دالة إنشاء الحساب
     async function signup() {
-        const email = document.getElementById('signupEmail').value;
-        const pass = document.getElementById('signupPassword').value;
-        const confirm = document.getElementById('signupConfirm').value;
-        const err = document.getElementById('signupError');
-        const loader = document.getElementById('signupLoader');
-
-        if(!email || !pass || !confirm) { err.style.display = 'block'; err.innerText = "يرجى تعبئة جميع الحقول"; return; }
-        if(pass !== confirm) { err.style.display = 'block'; err.innerText = "كلمات المرور غير متطابقة"; return; }
-        if(pass.length < 6) { err.style.display = 'block'; err.innerText = "كلمة المرور يجب أن تكون 6 أحرف على الأقل"; return; }
-
-        err.style.display = 'none';
-        loader.style.display = 'block';
-
         try {
-            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-            // حفظ بيانات المستخدم الجديد في قاعدة البيانات بصلاحية افتراضية "user"
-            await db.collection('users').doc(userCredential.user.uid).set({
-                email: email,
-                role: 'user',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            const e = document.getElementById('signupEmail').value;
+            const p = document.getElementById('signupPassword').value;
+            const cred = await auth.createUserWithEmailAndPassword(e, p);
+            await db.collection('users').doc(cred.user.uid).set({ email: e, role: 'user' });
             window.location.href = "user.html";
-        } catch (e) {
-            loader.style.display = 'none';
-            err.style.display = 'block';
-            err.innerText = "خطأ أثناء إنشاء الحساب: " + e.message;
-        }
+        } catch (e) { alert("خطأ في الإنشاء: " + e.message); }
     }
 </script>
 </body>
